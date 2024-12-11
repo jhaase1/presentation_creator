@@ -39,23 +39,7 @@ const YAMLContent: React.FC<{ yamlData: YAMLData | null }> = ({ yamlData }) => {
     margin: '0 auto', // Center the content
   };
 
-  return (
-    <div style={containerStyle}>
-      {yamlData?.side_bar_file && (
-        <div>
-          <h2>Optional "side_bar_file":</h2>
-          <pre>{JSON.stringify(yamlData.side_bar_file, null, 2)}</pre>
-        </div>
-      )}
-
-      {yamlData && (
-        <div>
-          <h2>Parsed YAML Data:</h2>
-          <pre>{JSON.stringify(yamlData, null, 2)}</pre>
-        </div>
-      )}
-    </div>
-  );
+  return null;
 };
 
 export default YAMLContent;

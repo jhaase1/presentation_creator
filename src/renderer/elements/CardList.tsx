@@ -61,7 +61,7 @@ class CardList extends Component<{}, CardListState> {
             display: 'flex',
             flexDirection: 'column',
             overflowY: 'auto',
-            maxHeight: `${windowHeight - buttonHeight}px`,
+            maxHeight: `${windowHeight - 4 * buttonHeight}px`,
           }}
         >
           {cards.map((card, index) => (

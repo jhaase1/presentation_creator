@@ -37,7 +37,6 @@ export const CopySlidesButton = () => {
 
   return (
     <div>
-      <button onClick={cardListInstance.getCards}>Get Parts</button>
       <button onClick={insertAllSlides} style={{ marginTop: '16px' }}>
         Copy Slides to Presentation
       </button>

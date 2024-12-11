@@ -1,7 +1,3 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
 body {
   position: relative;
   color: white;
@@ -13,12 +9,56 @@ body {
     #7a2c9e 129.35%
   );
   font-family: sans-serif;
-  overflow-y: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  text-align: center;
+  padding: 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.main-content {
+  margin-top: 110px;
+  flex: 1;
+  display: flex;
+  justify-content: space-between; /* Ensure even spacing between columns */
+  align-items: flex-start; /* Align columns to the top */
+  padding: 2%;
+  width: 90%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-wide {
+  flex: 2;
+  margin-right: 20px; /* Space between wide column and narrow column */
+}
+
+.column-narrow {
+  flex: 1;
+}
+
+.spacing {
+  margin-top: 20px;
+}
+
+/* Retain button styling */
 button {
   background-color: white;
   padding: 10px 20px;

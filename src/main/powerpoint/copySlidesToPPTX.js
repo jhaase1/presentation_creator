@@ -1,3 +1,4 @@
+import { CmToDxa, ModifyShapeHelper } from 'pptx-automizer/dist';
 import Automizer from 'pptx-automizer';
 
 const fs = require('fs');
@@ -10,58 +11,43 @@ async function getSlideNumbers(pres, source) {
   return slideNumbers;
 }
 
-async function adjustSlideElements(slide, targetWidth = 1920, targetHeight = 1080) {
-  const dimensions = slide.getDimensions();
-  const { width: currentWidth, height: currentHeight } = dimensions;
-
-  // If dimensions match the target, no scaling needed
-  if (currentWidth === targetWidth && currentHeight === targetHeight) {
-      console.log("No scaling required, dimensions match.");
-      return;
-  }
-
-  // Determine scale factors for width and height
-  const scaleWidth = targetWidth / currentWidth;
-  const scaleHeight = targetHeight / currentHeight;
-
-  // Check if the aspect ratio is the same
-  const currentAspectRatio = currentWidth / currentHeight;
-  const targetAspectRatio = targetWidth / targetHeight;
-  let scaleFactor;
-
-  if (currentAspectRatio === targetAspectRatio) {
-      // Same aspect ratio: scale uniformly
-      scaleFactor = Math.min(scaleWidth, scaleHeight);
-  } else {
-      // Different aspect ratio: scale based on width and height independently
-      scaleFactor = { width: scaleWidth, height: scaleHeight };
-  }
-
+async function adjustSlideElements(slide) {
   // Get all elements in the slide
-  const elements = slide.getAllElements();
+  // Don't forget to use 'await'
+  const elements = await slide.getAllElements();
 
-  elements.forEach(element => {
-      if (typeof scaleFactor === 'number') {
-          // Apply uniform scaling (same aspect ratio)
-          element.setPosition({
-              x: element.position.x * scaleFactor,
-              y: element.position.y * scaleFactor,
-          });
-          element.setSize({
-              width: element.size.width * scaleFactor,
-              height: element.size.height * scaleFactor,
-          });
-      } else {
-          // Apply independent scaling (different aspect ratio)
-          element.setPosition({
-              x: element.position.x * scaleFactor.width,
-              y: element.position.y * scaleFactor.height,
-          });
-          element.setSize({
-              width: element.size.width * scaleFactor.width,
-              height: element.size.height * scaleFactor.height,
-          });
-      }
+  // All shapes should be vertically centered to these dimensions:
+  const targetDimensions = {
+    // imagine a virtual rectangle with a width of 23cm
+    w: CmToDxa(9.57 * 2.54),
+    // and a position of 3.56 in from the left.
+    x: CmToDxa(3.66 * 2.54),
+  };
+
+  // We enlarge all shapes by 122.5%
+  const scale = 1.2225;
+
+  elements.forEach((element) => {
+    slide.modifyElement(element.name, (xml) => {
+      // This will update shape position from the left,
+      // centered and according to the target vertical coordinates:
+      const targetOffset = (targetDimensions.w - element.position.cx) / 2;
+      const targetPos = {
+        x: targetDimensions.x + targetOffset,
+      };
+      ModifyShapeHelper.setPosition(targetPos)(xml);
+
+      // This will 'zoom' into the shape respecting its updated position:
+      const addWidth = element.position.cx * scale - element.position.cx;
+      const addHeight = element.position.cy * scale - element.position.cy;
+      const targetSize = {
+        w: element.position.cx + addWidth,
+        h: element.position.cy + addHeight,
+        x: targetPos.x - addWidth / 2,
+        y: element.position.y - addHeight / 2,
+      };
+      ModifyShapeHelper.setPosition(targetSize)(xml);
+    });
   });
 }
 
@@ -143,14 +129,6 @@ export async function addSlidesToPresentation(
   for (const input_file of file_name_list) {
     await processFile(input_file, pres);
   };
-
-  // Get useful information about loaded templates:
-  /*
-  const presInfo = await pres.getInfo();
-  const mySlides = presInfo.slidesByTemplate('shapes');
-  const mySlide = presInfo.slideByNumber('shapes', 2);
-  const myShape = presInfo.elementByName('shapes', 2, 'Cloud');
-  */
 
   // addSlide takes two arguments: The first will specify the source
   // presentation's label to get the template from, the second will set the
