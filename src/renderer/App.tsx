@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
 
 import YAMLFileSelector, { YAMLData } from './elements/YAMLFileSelector';

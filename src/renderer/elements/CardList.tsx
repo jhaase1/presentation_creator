@@ -2,23 +2,21 @@ import React, { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Card, { CardData, initializeCard } from './Card';
-import { useDrop } from 'react-dnd';
-
 
 interface CardListState {
   cards: CardData[];
   windowHeight: number;
 }
 
+const defaultProps: CardListState = {
+  cards: [],
+  windowHeight: 500,
+};
+
 class CardList extends Component<{}, CardListState> {
   private static instance: CardList | null = null;
 
-  static defaultProps: CardListState = {
-    cards: [],
-    windowHeight: 500,
-  };
-
-  constructor(props: CardListState = CardList.defaultProps) {
+  constructor(props: CardListState = defaultProps) {
     super(props);
 
     if (CardList.instance) {
@@ -43,6 +41,67 @@ class CardList extends Component<{}, CardListState> {
 
   handleResize = () => {
     this.setState({ windowHeight: window.innerHeight });
+  };
+
+  addCard = (options: Partial<CardData> = {}) => {
+    const addCardAsync = async () => {
+      const newCard = await initializeCard(options);
+      this.setState((prevState) => ({
+        cards: [...prevState.cards, newCard],
+      }));
+    };
+
+    addCardAsync();
+  };
+
+  deleteCard = (id: string) => {
+    this.setState((prevState) => ({
+      cards: prevState.cards.filter((card) => card.id !== id),
+    }));
+  };
+
+  moveCard = (fromIndex: number, toIndex: number) => {
+    this.setState((prevState) => {
+      const cards = [...prevState.cards];
+      const [removed] = cards.splice(fromIndex, 1);
+      cards.splice(toIndex, 0, removed);
+      return { cards };
+    });
+  };
+
+  setBlankSlide = (id: string, blankSlide: boolean) => {
+    this.setState((prevState) => {
+      const newCards = prevState.cards.map((card) =>
+        card.id === id ? { ...card, blankSlide } : card,
+      );
+      return { cards: newCards };
+    });
+  };
+
+  setUseSidebar = (id: string, useSidebar: boolean) => {
+    this.setState((prevState) => {
+      const newCards = prevState.cards.map((card) =>
+        card.id === id ? { ...card, useSidebar } : card,
+      );
+      return { cards: newCards };
+    });
+  };
+
+  setFile = (id: string, file: string) => {
+    this.setState((prevState) => {
+      const newCards = prevState.cards.map((card) =>
+        card.id === id ? { ...card, file } : card,
+      );
+      return { cards: newCards };
+    });
+  };
+
+  setCards = (newCards: CardData[]) => {
+    this.setState({ cards: newCards });
+  };
+
+  getCards = (): CardData[] => {
+    return this.state.cards;
   };
 
   renderCards() {
@@ -76,67 +135,6 @@ class CardList extends Component<{}, CardListState> {
       </DndProvider>
     );
   }
-
-  addCard = (options: Partial<CardData> = {}) => {
-    const addCardAsync = async () => {
-      const newCard = await initializeCard(options);
-      this.setState((prevState) => ({
-        cards: [...prevState.cards, newCard],
-      }));
-    };
-
-    addCardAsync();
-  };
-
-  deleteCard = (id: string) => {
-    this.setState((prevState) => ({
-      cards: prevState.cards.filter((card) => card.id !== id),
-    }));
-  };
-
-  moveCard = (fromIndex: number, toIndex: number) => {
-    this.setState((prevState) => {
-      const cards = [...prevState.cards];
-      const [removed] = cards.splice(fromIndex, 1);
-      cards.splice(toIndex, 0, removed);
-      return { cards };
-    });
-  };
-
-  setBlankSlide = (id: string, blankSlide: boolean) => {
-    this.setState((prevState) => {
-      const newCards = prevState.cards.map((card) =>
-        card.id === id ? { ...card, blankSlide } : card
-      );
-      return { cards: newCards };
-    });
-  };
-
-  setUseSidebar = (id: string, useSidebar: boolean) => {
-    this.setState((prevState) => {
-      const newCards = prevState.cards.map((card) =>
-        card.id === id ? { ...card, useSidebar } : card
-      );
-      return { cards: newCards };
-    });
-  };
-
-  setFile = (id: string, file: string) => {
-    this.setState((prevState) => {
-      const newCards = prevState.cards.map((card) =>
-        card.id === id ? { ...card, file } : card
-      );
-      return { cards: newCards };
-    });
-  };
-
-  setCards = (newCards: CardData[]) => {
-    this.setState({ cards: newCards });
-  };
-
-  getCards = (): CardData[] => {
-    return this.state.cards;
-  };
 
   render() {
     return (
