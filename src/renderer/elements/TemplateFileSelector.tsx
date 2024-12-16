@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { TemplateFileManager } from './TemplateFileManager';
+import { StateManager } from './StateManager';
 
 class TemplateFileSelector extends Component {
-  state = {
-    templateFile: '' as string, // Store file name as a string (empty string for no file)
-  };
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      templateFile: '', // Store file name as a string (empty string for no file)
+    };
+  }
 
   componentDidMount() {
-    const fileManager = TemplateFileManager.getInstance();
+    const fileManager = StateManager.getInstance();
     this.updateFile = this.updateFile.bind(this);
     fileManager.onFileChange(this.updateFile);
 
@@ -16,12 +19,12 @@ class TemplateFileSelector extends Component {
   }
 
   componentWillUnmount() {
-    const fileManager = TemplateFileManager.getInstance();
+    const fileManager = StateManager.getInstance();
     fileManager.offFileChange(this.updateFile);
   }
 
   updateFile() {
-    const fileManager = TemplateFileManager.getInstance();
+    const fileManager = StateManager.getInstance();
     const fileString = fileManager.getTemplateFile(); // Expecting a string (file path or name)
 
     // Update the state with the file string
@@ -32,7 +35,7 @@ class TemplateFileSelector extends Component {
     const file = event.target.files?.[0];
     if (file && file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
       const fileName = file.path; // Get the file name (string)
-      TemplateFileManager.getInstance().setTemplateFile(fileName); // Pass the string to TemplateFileManager
+      StateManager.getInstance().setTemplateFile(fileName); // Pass the string to StateManager
     } else {
       alert('Please select a valid PowerPoint (.pptx) file.');
     }
@@ -47,7 +50,7 @@ class TemplateFileSelector extends Component {
     const file = event.dataTransfer.files?.[0];
     if (file && file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
       const fileName = file.path; // Get the file name (string)
-      TemplateFileManager.getInstance().setTemplateFile(fileName); // Pass the string to TemplateFileManager
+      StateManager.getInstance().setTemplateFile(fileName); // Pass the string to StateManager
     } else {
       alert('Please select a valid PowerPoint (.pptx) file.');
     }

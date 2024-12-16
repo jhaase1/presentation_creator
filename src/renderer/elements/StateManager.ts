@@ -1,15 +1,19 @@
-export class TemplateFileManager {
-  private static instance: TemplateFileManager;
+export class StateManager {
+  private static instance: StateManager;
+
   private templateFile: string | null = null;
+
+  private sidebarFile: string | null = null;
+
   private listeners: Set<() => void> = new Set();
 
   private constructor() {}
 
-  static getInstance(): TemplateFileManager {
-    if (!TemplateFileManager.instance) {
-      TemplateFileManager.instance = new TemplateFileManager();
+  static getInstance(): StateManager {
+    if (!StateManager.instance) {
+      StateManager.instance = new StateManager();
     }
-    return TemplateFileManager.instance;
+    return StateManager.instance;
   }
 
   getTemplateFile(): string | null {
@@ -18,7 +22,15 @@ export class TemplateFileManager {
 
   setTemplateFile(file: string): void {
     this.templateFile = file;
-    console.log("setting template file", this.templateFile)
+    this.notifyListeners();
+  }
+
+  getSidebarFile(): string | null {
+    return this.sidebarFile;
+  }
+
+  setSidebarFile(file: string): void {
+    this.sidebarFile = file;
     this.notifyListeners();
   }
 
@@ -31,7 +43,6 @@ export class TemplateFileManager {
   }
 
   private notifyListeners(): void {
-    console.log("notifying listeners", this.listeners)
     this.listeners.forEach((listener) => listener());
   }
 }

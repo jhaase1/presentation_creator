@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import readYAMLFile from './readYAMLFile';
 import CardList from './CardList';
-import { SidebarFileManager } from './SidebarFileManager';
+import { StateManager } from './StateManager';
 
 export interface YAMLData {
   side_bar_file?: any;
@@ -22,11 +22,13 @@ const YAMLFileSelector: React.FC = () => {
     }
 
     if (yamlData?.side_bar_file) {
-      SidebarFileManager.getInstance().setSidebarFile(yamlData.side_bar_file);
+      StateManager.getInstance().setSidebarFile(yamlData.side_bar_file);
     }
   }, [yamlData?.parts_list, yamlData?.side_bar_file]);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const selectedFile = event.target.files?.[0];
 
     if (selectedFile) {
@@ -92,7 +94,9 @@ const YAMLFileSelector: React.FC = () => {
         {/* Button to trigger file input */}
         <button
           onClick={() => {
-            const fileInput = document.querySelector('#yaml_file_input') as HTMLInputElement | null;
+            const fileInput = document.querySelector(
+              '#yaml_file_input',
+            ) as HTMLInputElement | null;
             if (fileInput) {
               fileInput.click();
             }
