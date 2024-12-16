@@ -3,8 +3,9 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import './App.css';
 
-import FileSelector from './elements/FileSelector';
-import YAMLContent, { YAMLData } from './elements/YAMLContent';
+import YAMLFileSelector, { YAMLData } from './elements/YAMLFileSelector';
+import SidebarFileSelector from './elements/SidebarFileSelector';
+import TemplateFileSelector from './elements/TemplateFileSelector';
 import { CopySlidesButton } from './elements/CopySlides';
 import CardList from './elements/CardList';
 
@@ -30,16 +31,19 @@ function Hello() {
     {/* Combined Column */}
     <div className="column column-narrow">
       {/* File Selector Component */}
-      <FileSelector id="yaml_input" onFileSelect={handleFileSelect} />
+      <YAMLFileSelector/>
+
+      {/* File Selector Component */}
+      <SidebarFileSelector/>
+
+      {/* Template Selector Component */}
+      <TemplateFileSelector/>
 
       {/* Spacing between components */}
       <div className="spacing"></div>
 
       {/* Copy Slides Button */}
       <CopySlidesButton />
-
-      {/* YAML Content Component */}
-      <YAMLContent yamlData={yamlData} />
     </div>
   </div>
 </div>

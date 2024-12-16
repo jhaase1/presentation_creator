@@ -21,8 +21,18 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    AddSlidesToPresentation: async (file_name_list:string[]) => {
-      const result = await ipcRenderer.invoke('AddSlidesToPresentation', file_name_list);
+    AddSlidesToPresentation: async (
+      file_name_list:string[],
+      templateFile:string = "C:/Users/haas1/programming/presentation_creator/template.pptx",
+      outputFile:string = "C:/Users/haas1/programming/presentation_creator/output2.pptx"
+    ) => {
+      const result = await ipcRenderer.invoke(
+        'AddSlidesToPresentation',
+        file_name_list,
+        templateFile,
+        outputFile
+      );
+
       return result
     },
   },

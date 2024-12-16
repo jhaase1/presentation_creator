@@ -61,13 +61,13 @@ async function processFile(input_file, pres) {
       console.log("I think it had slides:", slideNumbers);
 
       for (const slideNumber of slideNumbers) {
-          console.log("Adding slide:", slideNumber);
+          // console.log("Adding slide:", slideNumber);
           pres.addSlide(
             input_file,
             slideNumber,
             (slide) => {
               adjustSlideElements(slide);
-              console.log("I think I'm changing slide layout");
+              // console.log("I think I'm changing slide layout");
               // slide.useSlideLayout("Blank");
             }
           );
@@ -79,8 +79,8 @@ async function processFile(input_file, pres) {
 
 export async function addSlidesToPresentation(
   file_name_list,
-  templatePath = "C:/Users/haas1/programming/presentation_creator/template.pptx",
-  outputPath = "C:/Users/haas1/programming/presentation_creator/output.pptx"
+  templateFile = "C:/Users/haas1/programming/presentation_creator/template.pptx",
+  outputFile
 ) {
   // First, let's set some preferences!
   const automizer = new Automizer({
@@ -124,7 +124,7 @@ export async function addSlidesToPresentation(
   // With removeExistingSlides set to 'false', each addSlide will append to
   // any existing slide in RootTemplate.pptx. Otherwise, we are going to start
   // with a truncated root template.
-  let pres = automizer.loadRoot(templatePath)
+  let pres = automizer.loadRoot(templateFile)
 
   for (const input_file of file_name_list) {
     await processFile(input_file, pres);
@@ -135,7 +135,7 @@ export async function addSlidesToPresentation(
   // slide number to require.
 
   // Finally, we want to write the output file.
-  pres.write(outputPath).then((summary) => {
+  pres.write(outputFile).then((summary) => {
     console.log(summary);
   });
 

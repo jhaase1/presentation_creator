@@ -53,7 +53,6 @@ export const initializeCard = async (options: {
 
   return newCard;
 };
-
 const Card: React.FC<CardProps> = ({
   card,
   index,
@@ -65,11 +64,15 @@ const Card: React.FC<CardProps> = ({
 }) => {
   const { id, file, useSidebar, blankSlide } = card;
 
-  const [, ref] = useDrag({
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Drag functionality
+  const [, drag] = useDrag({
     type: ItemTypes.CARD,
     item: { id, index },
   });
 
+  // Drop functionality
   const [{ isOver }, drop] = useDrop({
     accept: ItemTypes.CARD,
     hover: (item: { id: string; index: number }, monitor: DropTargetMonitor) => {
@@ -78,13 +81,34 @@ const Card: React.FC<CardProps> = ({
         item.index = index;
       }
     },
+    drop: (item: { id: string; index: number }, monitor: DropTargetMonitor) => {
+      // Handle card-specific drop logic here if needed
+    },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
   });
 
+  drag(drop(cardRef)); // Combine refs for drag and drop
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    const droppedFile = event.dataTransfer.files?.[0];
+
+    if (
+      droppedFile &&
+      droppedFile.type ===
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    ) {
+      // Handle file drop
+      setFile(id, droppedFile.path);
+    }
+  };
+
   const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = event.target.files && event.target.files[0];
+  const newFile = event.target.files && event.target.files[0];
+
     if (newFile) {
       setFile(id, newFile.path);
     }
@@ -97,14 +121,11 @@ const Card: React.FC<CardProps> = ({
   const handleBlankSlideChange = () => {
     setBlankSlide(id, !blankSlide);
   };
-
   return (
     <div
-      key={id}
-      ref={(node) => {
-        ref(drop(node));
-      }}
-      onDragOver={(e) => e.preventDefault()}
+      ref={cardRef}
+      onDragOver={(e) => e.preventDefault()} // Allow dragging over
+      onDrop={handleDrop} // Handle file drops
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr auto',
@@ -131,43 +152,42 @@ const Card: React.FC<CardProps> = ({
             type="file"
             accept=".pptx"
             style={{ display: 'none' }}
-            onChange={fileInputChangeHandler}
+            onChange={(e) => {
+              const newFile = e.target.files?.[0];
+              if (newFile) setFile(id, newFile.path);
+            }}
           />
         </label>
 
-        <label style={{ fontSize: 'inherit', fontWeight: 'inherit' }}>
+        <label>
           <input
-            key={`useSidebar-${id}`}
             type="checkbox"
             checked={useSidebar}
-            onChange={handleUseSidebarChange}
+            onChange={() => setUseSidebar(id, !useSidebar)}
           />
           Use Sidebar
         </label>
 
-        <label style={{ fontSize: 'inherit', fontWeight: 'inherit' }}>
+        <label>
           <input
-            key={`blankSlide-${id}`}
             type="checkbox"
             checked={blankSlide}
-            onChange={handleBlankSlideChange}
+            onChange={() => setBlankSlide(id, !blankSlide)}
           />
           Insert blank slide after
         </label>
       </div>
-      <div>
-        <button
-          onClick={() => deleteCard(id)}
-          style={{
-            color: 'white',
-            backgroundColor: '#d9534f',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          x
-        </button>
-      </div>
+      <button
+        onClick={() => deleteCard(id)}
+        style={{
+          color: 'white',
+          backgroundColor: '#d9534f',
+          border: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        x
+      </button>
     </div>
   );
 };

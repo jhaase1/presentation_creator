@@ -1,19 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import readYAMLFile from './readYAMLFile';
+import CardList from './CardList';
+import { SidebarFileManager } from './SidebarFileManager';
 
-interface FileSelectorProps {
-  onFileSelect: (data: any) => void; // Adjust 'any' to the appropriate type of data
-  id: string; // Add a unique `id` prop
+export interface YAMLData {
+  side_bar_file?: any;
+  parts_list?: any[];
 }
 
-const FileSelector: React.FC<FileSelectorProps> = ({ onFileSelect, id }) => {
+const cardListInstance = new CardList();
+
+const YAMLFileSelector: React.FC = () => {
+  const [yamlData, setYamlData] = useState<YAMLData | null>(null);
+
+  useEffect(() => {
+    // Initialize parts based on parts_list
+    if (yamlData?.parts_list) {
+      yamlData.parts_list.forEach((obj: any) => {
+        cardListInstance.addCard(obj);
+      });
+    }
+
+    if (yamlData?.side_bar_file) {
+      SidebarFileManager.getInstance().setSidebarFile(yamlData.side_bar_file);
+    }
+  }, [yamlData?.parts_list, yamlData?.side_bar_file]);
+
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
 
     if (selectedFile) {
       try {
         const data = await readYAMLFile(selectedFile);
-        onFileSelect(data);
+        setYamlData(data);
       } catch (error: any) {
         console.error(error.message);
       }
@@ -34,15 +53,22 @@ const FileSelector: React.FC<FileSelectorProps> = ({ onFileSelect, id }) => {
     if (selectedFile) {
       try {
         const data = await readYAMLFile(selectedFile);
-        onFileSelect(data);
+        setYamlData(data);
       } catch (error: any) {
         console.error(error.message);
       }
     }
   };
 
+  const containerStyle: React.CSSProperties = {
+    maxWidth: '400px',
+    overflowX: 'auto',
+    margin: '0 auto', // Center the content
+  };
+
   return (
     <div>
+      {/* File Selector */}
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -54,10 +80,9 @@ const FileSelector: React.FC<FileSelectorProps> = ({ onFileSelect, id }) => {
       >
         <p>Drag and drop a YAML file here or click to select</p>
 
-        {/* Hidden file input with dynamic `id` and `key` */}
+        {/* Hidden file input */}
         <input
-          key={`yaml_file_${id}`}  // Dynamic key using a unique id
-          id={`yaml_file_${id}`}    // Dynamic id to ensure uniqueness
+          id="yaml_file_input"
           type="file"
           accept=".yaml, .yml"
           style={{ display: 'none' }}
@@ -67,7 +92,7 @@ const FileSelector: React.FC<FileSelectorProps> = ({ onFileSelect, id }) => {
         {/* Button to trigger file input */}
         <button
           onClick={() => {
-            const fileInput = document.querySelector(`#yaml_file_${id}`) as HTMLInputElement | null;
+            const fileInput = document.querySelector('#yaml_file_input') as HTMLInputElement | null;
             if (fileInput) {
               fileInput.click();
             }
@@ -80,4 +105,4 @@ const FileSelector: React.FC<FileSelectorProps> = ({ onFileSelect, id }) => {
   );
 };
 
-export default FileSelector;
+export default YAMLFileSelector;

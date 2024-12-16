@@ -137,12 +137,14 @@ app
   })
   .catch(console.log);
 
-  ipcMain.handle('AddSlidesToPresentation', async (event, file_name_list) => {
+  ipcMain.handle('AddSlidesToPresentation', async (event, file_name_list, templateFile) => {
     try {
       // Perform your file operations here
       // Example: fs.writeFileSync('path/to/presentation', JSON.stringify(file_name_list));
+      const outputFile = "C:/Users/haas1/programming/presentation_creator/output2.pptx"
+
       console.log("I'm crossing the rendered-main barrier", JSON.stringify(file_name_list))
-      addSlidesToPresentation( file_name_list )
+      addSlidesToPresentation( file_name_list , templateFile , outputFile )
       return { status: 'success' };
     } catch(error) {
       if (typeof error === "string") {
