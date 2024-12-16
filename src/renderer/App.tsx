@@ -17,37 +17,35 @@ function Hello() {
   };
 
   return (
+    <div>
+      <header className="header">
+        <h1>St. Mary of the Hills presentation creator</h1>
+      </header>
+      <div className="main-content">
+        {/* Column 1 */}
+        <div className="column column-wide">
+          {/* Render the CardList component */}
+          <CardList />
+        </div>
+        {/* Combined Column */}
+        <div className="column column-narrow">
+          {/* File Selector Component */}
+          <YAMLFileSelector />
 
-<div>
-  <header className="header">
-    <h1>St. Mary of the Hills presentation creator</h1>
-  </header>
-  <div className="main-content">
-    {/* Column 1 */}
-    <div className="column column-wide">
-      {/* Render the CardList component */}
-      <CardList />
+          {/* File Selector Component */}
+          <SidebarFileSelector />
+
+          {/* Template Selector Component */}
+          <TemplateFileSelector />
+
+          {/* Spacing between components */}
+          <div className="spacing" />
+
+          {/* Copy Slides Button */}
+          <CopySlidesButton />
+        </div>
+      </div>
     </div>
-    {/* Combined Column */}
-    <div className="column column-narrow">
-      {/* File Selector Component */}
-      <YAMLFileSelector/>
-
-      {/* File Selector Component */}
-      <SidebarFileSelector/>
-
-      {/* Template Selector Component */}
-      <TemplateFileSelector/>
-
-      {/* Spacing between components */}
-      <div className="spacing"></div>
-
-      {/* Copy Slides Button */}
-      <CopySlidesButton />
-    </div>
-  </div>
-</div>
-
   );
 }
 
