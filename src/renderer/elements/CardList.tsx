@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Card, { initializeCard } from './Card';
+import Card, { CardData, initializeCard } from './Card';
 import { useDrop } from 'react-dnd';
 
-interface CardData {
-  id: string;
-  file: string | null;
-  useSidebar: boolean;
-  blankSlide: boolean;
-}
 
 interface CardListState {
   cards: CardData[];

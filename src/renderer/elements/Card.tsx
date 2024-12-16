@@ -6,6 +6,13 @@ const ItemTypes = {
   CARD: 'card',
 };
 
+export interface CardData {
+  id: string;
+  file: string | null;
+  useSidebar: boolean;
+  blankSlide: boolean;
+}
+
 interface CardProps {
   card: CardData;
   index: number;
@@ -14,13 +21,6 @@ interface CardProps {
   setBlankSlide: (id: string, blankSlide: boolean) => void;
   moveCard: (fromIndex: number, toIndex: number) => void;
   deleteCard: (id: string) => void;
-}
-
-interface CardData {
-  id: string;
-  file: string | null;
-  useSidebar: boolean;
-  blankSlide: boolean;
 }
 
 const getTitleOrBasename = (part: any, filename: string | null): string => {
