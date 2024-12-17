@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -30,6 +30,15 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.handle('show-save-dialog', async (event, defaultPath, filters) => {
+  const result = dialog.showSaveDialogSync({
+    title: 'Save As',
+    defaultPath: defaultPath ,
+    filters: filters,
+  });
+  return result;
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -137,13 +146,11 @@ app
   })
   .catch(console.log);
 
-  ipcMain.handle('AddSlidesToPresentation', async (event, file_name_list, templateFile) => {
+  ipcMain.handle('AddSlidesToPresentation', async (event, file_name_list, templateFile, outputFile) => {
     try {
       // Perform your file operations here
       // Example: fs.writeFileSync('path/to/presentation', JSON.stringify(file_name_list));
-      const outputFile = "C:/Users/haas1/programming/presentation_creator/output2.pptx"
-
-      console.log("I'm crossing the rendered-main barrier", JSON.stringify(file_name_list))
+      console.log("I'm crossing the rendered-main barrier", JSON.stringify(file_name_list), templateFile , outputFile)
       addSlidesToPresentation( file_name_list , templateFile , outputFile )
       return { status: 'success' };
     } catch(error) {

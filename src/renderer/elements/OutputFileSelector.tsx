@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StateManager } from './StateManager';
+import { showSaveDialog, FileFilter } from '../utilities/createSaveAsDialog';
 
 class OutputFileSelector extends Component {
   constructor(props: any) {
@@ -23,13 +24,8 @@ class OutputFileSelector extends Component {
     fileManager.offFileChange(this.updateFile);
   }
 
-  handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
-  handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files?.[0];
+  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (
       file &&
       file.type ===
@@ -40,15 +36,18 @@ class OutputFileSelector extends Component {
     }
   };
 
-  handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (
-      file &&
-      file.type ===
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-    ) {
-      const fileName = file.path; // Get the file name (string)
-      StateManager.getInstance().setOutputFile(fileName); // Pass the string to StateManager
+  handleSaveAs = async () => {
+    const defaultPath = this.state.outputFile || 'output.pptx';
+    const filters: FileFilter[] = [
+      {
+        name: 'PowerPoint Files',
+        extensions: ['pptx'],
+      },
+    ];
+    const result = await showSaveDialog(defaultPath, filters);
+    if (result) {
+      this.setState({ outputFile: result });
+      StateManager.getInstance().setOutputFile(result);
     }
   };
 
@@ -65,8 +64,6 @@ class OutputFileSelector extends Component {
 
     return (
       <div
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
         style={{
           border: '2px dashed #ccc',
           padding: '20px',
@@ -75,13 +72,6 @@ class OutputFileSelector extends Component {
         }}
       >
         <p>Output PowerPoint</p>
-        <input
-          type="file"
-          accept=".pptx"
-          id="output-input"
-          style={{ display: 'none' }}
-          onChange={this.handleFileChange}
-        />
         <div
           style={{
             border: '2px solid #428bca',
@@ -91,7 +81,7 @@ class OutputFileSelector extends Component {
             margin: '10px',
             textAlign: 'left',
           }}
-          onClick={() => document.getElementById('output-input')?.click()}
+          onClick={this.handleSaveAs}
         >
           {outputFile || (
             <span style={{ color: '#999' }}>
