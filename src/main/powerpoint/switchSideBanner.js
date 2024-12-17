@@ -23,8 +23,6 @@ export function unzipFolder(inputFilePath, outputFilePath) {
       zip.extractEntryTo(entryName, outputFilePath, true, true);
     }
   });
-
-  console.log('Folder unzipped successfully.');
 }
 
 export function replace_file(current_file, new_file) {
