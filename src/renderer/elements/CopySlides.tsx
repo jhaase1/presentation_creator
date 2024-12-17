@@ -40,8 +40,8 @@ export function CopySlidesButton() {
       const templateFile = StateManager.getInstance().getTemplateFile();
       const outputFile = StateManager.getInstance().getOutputFile();
 
-      console.log("templateFile:", templateFile);
-      console.log("outputFile:", outputFile);
+      console.log('templateFile:', templateFile);
+      console.log('outputFile:', outputFile);
 
       await addSlidesToPresentationInMain(filenames, templateFile, outputFile);
     } catch (error) {

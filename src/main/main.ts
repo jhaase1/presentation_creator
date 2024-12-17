@@ -14,7 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addSlidesToPresentation } from './powerpoint/copySlidesToPPTX'
+import { addSlidesToPresentation } from './powerpoint/copySlidesToPPTX';
 
 class AppUpdater {
   constructor() {
@@ -35,8 +35,8 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.handle('show-save-dialog', async (event, defaultPath, filters) => {
   const result = dialog.showSaveDialogSync({
     title: 'Save As',
-    defaultPath: defaultPath ,
-    filters: filters,
+    defaultPath,
+    filters,
   });
   return result;
 });
@@ -146,20 +146,27 @@ app
   })
   .catch(console.log);
 
-  ipcMain.handle('AddSlidesToPresentation', async (event, file_name_list, templateFile, outputFile) => {
+ipcMain.handle(
+  'AddSlidesToPresentation',
+  async (event, file_name_list, templateFile, outputFile) => {
     try {
       // Perform your file operations here
       // Example: fs.writeFileSync('path/to/presentation', JSON.stringify(file_name_list));
-      console.log("I'm crossing the rendered-main barrier", JSON.stringify(file_name_list), templateFile , outputFile)
-      addSlidesToPresentation( file_name_list , templateFile , outputFile )
+      console.log(
+        "I'm crossing the rendered-main barrier",
+        JSON.stringify(file_name_list),
+        templateFile,
+        outputFile,
+      );
+      addSlidesToPresentation(file_name_list, templateFile, outputFile);
       return { status: 'success' };
-    } catch(error) {
-      if (typeof error === "string") {
+    } catch (error) {
+      if (typeof error === 'string') {
         return { status: 'error', message: error };
-      } else if (error instanceof Error) {
+      }
+      if (error instanceof Error) {
         return { status: 'error', message: error.message };
       }
-  }
-
-  });
-
+    }
+  },
+);
