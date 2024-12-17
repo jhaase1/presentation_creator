@@ -111,7 +111,7 @@ export function createTemporaryFolder() {
   });
 }
 
-export function replace_powerpoint_side_banner(
+export function switchSideBanner(
   original_pptx,
   originalImage,
   newImage,
@@ -141,4 +141,4 @@ export function replace_powerpoint_side_banner(
 // const originalImage = 'ppt/media/image1.png';
 // const newImage = 'C:/Users/haas1/programming/presentation_creator/red.png';
 
-// replace_powerpoint_side_banner(original_pptx, originalImage, newImage, rezipped_pptx);
+// switchSideBanner(original_pptx, originalImage, newImage, rezipped_pptx);
