@@ -4,7 +4,7 @@ import { StateManager } from './StateManager';
 
 const cardListInstance = new CardList();
 
-export function CopySlidesButton() {
+function CopySlidesButton() {
   async function addSlidesToPresentationInMain(
     file_name_list: string[],
     templateFile: string,
@@ -57,3 +57,5 @@ export function CopySlidesButton() {
     </div>
   );
 }
+
+export default CopySlidesButton;
