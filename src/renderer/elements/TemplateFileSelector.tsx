@@ -58,6 +58,7 @@ class TemplateFileSelector extends Component {
 
     // Update the state with the file string
     this.setState({ templateFile: fileString });
+    document.getElementById("template-input").value = "";
   }
 
   render() {

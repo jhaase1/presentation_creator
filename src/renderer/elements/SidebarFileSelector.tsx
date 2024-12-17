@@ -25,6 +25,7 @@ class SidebarFileSelector extends Component {
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file && file.type.startsWith('image/')) {
       const fileName = file.path; // Get the file name (string)
       StateManager.getInstance().setSidebarFile(fileName); // Pass the string to StateManager
@@ -46,10 +47,10 @@ class SidebarFileSelector extends Component {
 
   updateFile() {
     const fileManager = StateManager.getInstance();
-    const fileString = fileManager.getSidebarFile(); // Expecting a string (file path or name)
+    const sidebarFile = fileManager.getSidebarFile();
+    this.setState({ sidebarFile: sidebarFile });
 
-    // Update the state with the file string
-    this.setState({ sidebarFile: fileString });
+    document.getElementById("sidebar-input").value = "";
   }
 
   render() {
