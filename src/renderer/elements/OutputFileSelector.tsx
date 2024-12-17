@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StateManager } from './StateManager';
 
-class TemplateFileSelector extends Component {
+class OutputFileSelector extends Component {
   constructor(props: any) {
     super(props);
     this.state = {
-      templateFile: '', // Store file name as a string (empty string for no file)
+      outputFile: '', // Store file name as a string (empty string for no file)
     };
   }
 
@@ -15,7 +15,7 @@ class TemplateFileSelector extends Component {
     fileManager.onFileChange(this.updateFile);
 
     // Initialize the state with the file manager's current file string
-    this.setState({ templateFile: fileManager.getTemplateFile() });
+    this.setState({ outputFile: fileManager.getOutputFile() });
   }
 
   componentWillUnmount() {
@@ -36,7 +36,7 @@ class TemplateFileSelector extends Component {
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       const fileName = file.path; // Get the file name (string)
-      StateManager.getInstance().setTemplateFile(fileName); // Pass the string to StateManager
+      StateManager.getInstance().setOutputFile(fileName); // Pass the string to StateManager
     }
   };
 
@@ -48,20 +48,20 @@ class TemplateFileSelector extends Component {
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
       const fileName = file.path; // Get the file name (string)
-      StateManager.getInstance().setTemplateFile(fileName); // Pass the string to StateManager
+      StateManager.getInstance().setOutputFile(fileName); // Pass the string to StateManager
     }
   };
 
   updateFile() {
     const fileManager = StateManager.getInstance();
-    const fileString = fileManager.getTemplateFile(); // Expecting a string (file path or name)
+    const fileString = fileManager.getOutputFile(); // Expecting a string (file path or name)
 
     // Update the state with the file string
-    this.setState({ templateFile: fileString });
+    this.setState({ outputFile: fileString });
   }
 
   render() {
-    const { templateFile } = this.state;
+    const { outputFile } = this.state;
 
     return (
       <div
@@ -74,11 +74,11 @@ class TemplateFileSelector extends Component {
           textAlign: 'center',
         }}
       >
-        <p>Template PowerPoint</p>
+        <p>Output PowerPoint</p>
         <input
           type="file"
           accept=".pptx"
-          id="template-input"
+          id="output-input"
           style={{ display: 'none' }}
           onChange={this.handleFileChange}
         />
@@ -91,9 +91,9 @@ class TemplateFileSelector extends Component {
             margin: '10px',
             textAlign: 'left',
           }}
-          onClick={() => document.getElementById('template-input')?.click()}
+          onClick={() => document.getElementById('output-input')?.click()}
         >
-          {templateFile || (
+          {outputFile || (
             <span style={{ color: '#999' }}>
               Drag and drop a PowerPoint (.pptx) file here, or click to select
             </span>
@@ -104,4 +104,4 @@ class TemplateFileSelector extends Component {
   }
 }
 
-export default TemplateFileSelector;
+export default OutputFileSelector;

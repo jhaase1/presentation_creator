@@ -5,6 +5,8 @@ export class StateManager {
 
   private sidebarFile: string | null = null;
 
+  private outputFile: string | null = null;
+
   private listeners: Set<() => void> = new Set();
 
   private constructor() {}
@@ -31,6 +33,15 @@ export class StateManager {
 
   setSidebarFile(file: string): void {
     this.sidebarFile = file;
+    this.notifyListeners();
+  }
+
+  getOutputFile(): string | null {
+    return this.outputFile;
+  }
+
+  setOutputFile(file: string): void {
+    this.outputFile = file;
     this.notifyListeners();
   }
 
