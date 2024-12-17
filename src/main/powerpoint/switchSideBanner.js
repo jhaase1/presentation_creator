@@ -113,7 +113,7 @@ export function createTemporaryFolder() {
   });
 }
 
-export function replace_powerpoint_side_banner(
+export function switchSideBanner(
   original_pptx,
   originalImage,
   newImage,
@@ -135,12 +135,12 @@ export function replace_powerpoint_side_banner(
     });
 }
 
-// Usage
-const original_pptx = `C:/Users/haas1/Downloads/TESTFILE.pptx`;
-const rezipped_pptx = `C:/Users/haas1/Downloads/REZIPPED.pptx`;
+// // Usage
+// const original_pptx = `C:/Users/haas1/Downloads/TESTFILE.pptx`;
+// const rezipped_pptx = `C:/Users/haas1/Downloads/REZIPPED.pptx`;
 
-// Example usage:
-const originalImage = 'ppt/media/image1.png';
-const newImage = 'C:/Users/haas1/programming/presentation_creator/red.png';
+// // Example usage:
+// const originalImage = 'ppt/media/image1.png';
+// const newImage = 'C:/Users/haas1/programming/presentation_creator/red.png';
 
-processFiles(original_pptx, originalImage, newImage, rezipped_pptx);
+// switchSideBanner(original_pptx, originalImage, newImage, rezipped_pptx);
