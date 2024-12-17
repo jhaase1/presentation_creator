@@ -40,8 +40,6 @@ function Hello() {
 
           {/* Output Selector Component */}
           <OutputFileSelector />
-          {/* Spacing between components */}
-          <div className="spacing" />
 
           {/* Copy Slides Button */}
           <CopySlidesButton />
