@@ -22,33 +22,42 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
     AddSlidesToPresentation: async (
-      file_name_list:string[],
-      templateFile:string = "C:/Users/haas1/programming/presentation_creator/template.pptx",
-      outputFile:string,
+      file_name_list: string[],
+      templateFile: string,
+      outputFile: string,
     ) => {
-      console.log("I'm crossing the rendered-main barrier", JSON.stringify(file_name_list), templateFile , outputFile)
-
       const result = await ipcRenderer.invoke(
         'AddSlidesToPresentation',
         file_name_list,
         templateFile,
-        outputFile
+        outputFile,
       );
 
-      return result
+      return result;
     },
-    showSaveDialog: async (
-      defaultPath: string,
-      filters: FileFilter
-    ) => {
-          const result = await ipcRenderer.invoke(
-          'show-save-dialog',
-          defaultPath,
-          filters,
-        );
+    showSaveDialog: async (defaultPath: string, filters: FileFilter) => {
+      const result = await ipcRenderer.invoke(
+        'show-save-dialog',
+        defaultPath,
+        filters,
+      );
 
-        return result;
-      },
+      return result;
+    },
+    SwitchSideBanner: async (
+      pptxFile: string,
+      originalImage: string,
+      newImage: string,
+    ) => {
+      const result = await ipcRenderer.invoke(
+        'SwitchSideBanner',
+        pptxFile,
+        originalImage,
+        newImage,
+      );
+
+      return result;
+    },
   },
 };
 

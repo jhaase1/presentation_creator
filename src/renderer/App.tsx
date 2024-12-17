@@ -6,7 +6,7 @@ import YAMLFileSelector, { YAMLData } from './elements/YAMLFileSelector';
 import SidebarFileSelector from './elements/SidebarFileSelector';
 import TemplateFileSelector from './elements/TemplateFileSelector';
 import OutputFileSelector from './elements/OutputFileSelector';
-import { CopySlidesButton } from './elements/CopySlides';
+import CopySlidesButton from './elements/CopySlides';
 import CardList from './elements/CardList';
 
 function Hello() {
@@ -38,7 +38,7 @@ function Hello() {
           {/* Template Selector Component */}
           <TemplateFileSelector />
 
-            {/* Output Selector Component */}
+          {/* Output Selector Component */}
           <OutputFileSelector />
           {/* Spacing between components */}
           <div className="spacing" />

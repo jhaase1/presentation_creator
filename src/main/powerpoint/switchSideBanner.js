@@ -23,8 +23,6 @@ export function unzipFolder(inputFilePath, outputFilePath) {
       zip.extractEntryTo(entryName, outputFilePath, true, true);
     }
   });
-
-  console.log('Folder unzipped successfully.');
 }
 
 export function replace_file(current_file, new_file) {
@@ -135,12 +133,12 @@ export function replace_powerpoint_side_banner(
     });
 }
 
-// Usage
-const original_pptx = `C:/Users/haas1/Downloads/TESTFILE.pptx`;
-const rezipped_pptx = `C:/Users/haas1/Downloads/REZIPPED.pptx`;
+// // Usage
+// const original_pptx = `C:/Users/haas1/Downloads/TESTFILE.pptx`;
+// const rezipped_pptx = `C:/Users/haas1/Downloads/REZIPPED.pptx`;
 
-// Example usage:
-const originalImage = 'ppt/media/image1.png';
-const newImage = 'C:/Users/haas1/programming/presentation_creator/red.png';
+// // Example usage:
+// const originalImage = 'ppt/media/image1.png';
+// const newImage = 'C:/Users/haas1/programming/presentation_creator/red.png';
 
-processFiles(original_pptx, originalImage, newImage, rezipped_pptx);
+// replace_powerpoint_side_banner(original_pptx, originalImage, newImage, rezipped_pptx);

@@ -15,6 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { addSlidesToPresentation } from './powerpoint/copySlidesToPPTX';
+import { replace_powerpoint_side_banner } from './powerpoint/switchSideBanner';
 
 class AppUpdater {
   constructor() {
@@ -148,17 +149,34 @@ app
 
 ipcMain.handle(
   'AddSlidesToPresentation',
-  async (event, file_name_list, templateFile, outputFile) => {
+  async (event, fileNameList, templateFile, outputFile) => {
     try {
       // Perform your file operations here
       // Example: fs.writeFileSync('path/to/presentation', JSON.stringify(file_name_list));
       console.log(
         "I'm crossing the rendered-main barrier",
-        JSON.stringify(file_name_list),
+        JSON.stringify(fileNameList),
         templateFile,
         outputFile,
       );
-      addSlidesToPresentation(file_name_list, templateFile, outputFile);
+      addSlidesToPresentation(fileNameList, templateFile, outputFile);
+      return { status: 'success' };
+    } catch (error) {
+      if (typeof error === 'string') {
+        return { status: 'error', message: error };
+      }
+      if (error instanceof Error) {
+        return { status: 'error', message: error.message };
+      }
+    }
+  },
+);
+
+ipcMain.handle(
+  'SwitchSideBanner',
+  async (event, pptxFile, originalImage, newImage) => {
+    try {
+      replace_powerpoint_side_banner(pptxFile, originalImage, newImage, pptxFile);
       return { status: 'success' };
     } catch (error) {
       if (typeof error === 'string') {

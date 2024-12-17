@@ -4,21 +4,43 @@ import { StateManager } from './StateManager';
 
 const cardListInstance = new CardList();
 
-export function CopySlidesButton() {
+function CopySlidesButton() {
   async function addSlidesToPresentationInMain(
-    file_name_list: string[],
+    fileNameList: string[],
     templateFile: string,
     outputFile: string,
   ) {
     try {
       const result = await window.electron.ipcRenderer.AddSlidesToPresentation(
-        file_name_list,
+        fileNameList,
         templateFile,
         outputFile,
       );
 
       if (result.status === 'success') {
         console.log('Slides added successfully');
+      } else {
+        console.error('Error:', result.message);
+      }
+    } catch (error) {
+      console.error('IPC invocation error:', error);
+    }
+  }
+
+  async function switchSideBannerInMain(
+    pptxFile: string,
+    originalImage: string,
+    newImage: string,
+  ) {
+    try {
+      const result = await window.electron.ipcRenderer.SwitchSideBanner(
+        pptxFile,
+        originalImage,
+        newImage,
+      );
+
+      if (result.status === 'success') {
+        console.log('Side banner switched successfully');
       } else {
         console.error('Error:', result.message);
       }
@@ -37,13 +59,17 @@ export function CopySlidesButton() {
         return part.file;
       });
 
-      const templateFile = StateManager.getInstance().getTemplateFile();
-      const outputFile = StateManager.getInstance().getOutputFile();
+      const state = StateManager.getInstance();
 
-      console.log('templateFile:', templateFile);
-      console.log('outputFile:', outputFile);
+      const templateFile = state.getTemplateFile();
+      const outputFile = state.getOutputFile();
+      const sidebarFile = state.getSidebarFile();
+
+      const originalImage = 'ppt/media/image1.png';
 
       await addSlidesToPresentationInMain(filenames, templateFile, outputFile);
+      await switchSideBannerInMain(outputFile, originalImage, sidebarFile);
+
     } catch (error) {
       console.error('Filenames not determined, error:', error);
     }
@@ -57,3 +83,5 @@ export function CopySlidesButton() {
     </div>
   );
 }
+
+export default CopySlidesButton;
