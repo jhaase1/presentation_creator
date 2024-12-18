@@ -5,15 +5,19 @@ import { StateManager } from './StateManager';
 const cardListInstance = new CardList();
 
 function CopySlidesButton() {
-  async function addSlidesToPresentationInMain(
+  async function OutputPresentation(
     fileNameList: string[],
     templateFile: string,
+    originalImage: string,
+    newImage: string,
     outputFile: string,
   ) {
     try {
-      const result = await window.electron.ipcRenderer.AddSlidesToPresentation(
+      const result = await window.electron.ipcRenderer.HandlePresentationTasks(
         fileNameList,
         templateFile,
+        originalImage,
+        newImage,
         outputFile,
       );
 
@@ -27,32 +31,10 @@ function CopySlidesButton() {
     }
   }
 
-  async function switchSideBannerInMain(
-    pptxFile: string,
-    originalImage: string,
-    newImage: string,
-  ) {
-    try {
-      const result = await window.electron.ipcRenderer.SwitchSideBanner(
-        pptxFile,
-        originalImage,
-        newImage,
-      );
-
-      if (result.status === 'success') {
-        console.log('Side banner switched successfully');
-      } else {
-        console.error('Error:', result.message);
-      }
-    } catch (error) {
-      console.error('IPC invocation error:', error);
-    }
-  }
-
   const insertAllSlides = async () => {
     try {
       const parts = cardListInstance.getCards();
-      const filenames: string[] = parts.flatMap((part) => {
+      const fileNameList: string[] = parts.flatMap((part) => {
         if (part.file === null) {
           return [];
         }
@@ -67,9 +49,13 @@ function CopySlidesButton() {
 
       const originalImage = 'ppt/media/image1.png';
 
-      await addSlidesToPresentationInMain(filenames, templateFile, outputFile);
-      await switchSideBannerInMain(outputFile, originalImage, sidebarFile);
-
+      await OutputPresentation(
+        fileNameList,
+        templateFile,
+        originalImage,
+        sidebarFile,
+        outputFile,
+      );
     } catch (error) {
       console.error('Filenames not determined, error:', error);
     }

@@ -9,13 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
+import tmp from 'tmp';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { addSlidesToPresentation } from './powerpoint/copySlidesToPPTX';
-import { switchSideBanner } from './powerpoint/switchSideBanner';
+import addSlidesToPresentation from './powerpoint/copySlidesToPPTX';
 
 class AppUpdater {
   constructor() {
@@ -148,27 +148,27 @@ app
   .catch(console.log);
 
 ipcMain.handle(
-  'AddSlidesToPresentation',
-  async (event, fileNameList, templateFile, outputFile) => {
+  'HandlePresentationTasks',
+  async (
+    event,
+    fileNameList,
+    templateFile,
+    originalImage,
+    newImage,
+    outputFile,
+  ) => {
     try {
-      addSlidesToPresentation(fileNameList, templateFile, outputFile);
-      return { status: 'success' };
-    } catch (error) {
-      if (typeof error === 'string') {
-        return { status: 'error', message: error };
-      }
-      if (error instanceof Error) {
-        return { status: 'error', message: error.message };
-      }
-    }
-  },
-);
+      const tempFile = tmp.fileSync({ postfix: '.pptx' });
+      // console.log('File: ', tempFile);
 
-ipcMain.handle(
-  'SwitchSideBanner',
-  async (event, pptxFile, originalImage, newImage) => {
-    try {
-      switchSideBanner(pptxFile, originalImage, newImage, pptxFile);
+      // Run AddSlidesToPresentation first
+      const originalPPTX = outputFile ; //`C:/Users/haas1/Downloads/TESTFILE.pptx`;
+
+      addSlidesToPresentation(fileNameList, templateFile, newImage, originalPPTX);
+
+      // Then run SwitchSideBanner
+      // switchSideBanner(originalPPTX, originalImage, newImage, outputFile);
+
       return { status: 'success' };
     } catch (error) {
       if (typeof error === 'string') {

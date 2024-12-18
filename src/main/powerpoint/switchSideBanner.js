@@ -19,7 +19,6 @@ export function unzipFolder(inputFilePath, outputFilePath) {
     // Extract each entry to the output folder
     if (!entry.isDirectory) {
       const { entryName } = entry;
-      const entryOutputPath = path.join(outputFilePath, entryName);
       zip.extractEntryTo(entryName, outputFilePath, true, true);
     }
   });
@@ -46,6 +45,10 @@ export function replace_file(current_file, new_file) {
 
 export function rezip_pptx(inputDir, outputFile) {
   // create a file to stream archive data to.
+  if (fs.existsSync(outputFile)) {
+    fs.unlinkSync(outputFile);
+  }
+
   const output = fs.createWriteStream(outputFile);
 
   const archive = archiver('zip', {
@@ -99,6 +102,10 @@ export function createTemporaryFolder() {
   return new Promise((resolve, reject) => {
     const tempDir = path.join(os.tmpdir(), `temp_folder_${Date.now()}`);
 
+    if (fs.existsSync(tempDir)) {
+      fs.rmdirSync(tempDir, { recursive: true });
+    }
+
     fs.mkdir(tempDir, { recursive: true }, (err) => {
       if (err) {
         console.error('Error creating temporary folder:', err);
@@ -120,13 +127,18 @@ export function switchSideBanner(
   createTemporaryFolder()
     .then((tempDir) => {
       // Unzip original_pptx to tempDir
+      console.log('Unzipping original: ', original_pptx, ' to tempDir:', tempDir);
       unzipFolder(original_pptx, tempDir);
 
+      console.log('Replacing image:', originalImage, ' with new image:', newImage);
       // Replace originalImage with newImage in tempDir
       replace_file(path.join(tempDir, originalImage), newImage);
 
+      console.log('Rezipping to:', rezipped_pptx);
       // Re-zip tempDir to create rezipped_pptx
       rezip_pptx(tempDir, rezipped_pptx);
+
+      console.log('Switch complete.');
     })
     .catch((err) => {
       console.error('Error processing files:', err);

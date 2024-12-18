@@ -21,16 +21,12 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    AddSlidesToPresentation: async (
-      file_name_list: string[],
-      templateFile: string,
-      outputFile: string,
+    HandlePresentationTasks: async (
+      fileNameList, templateFile, originalImage, newImage, outputFile,
     ) => {
       const result = await ipcRenderer.invoke(
-        'AddSlidesToPresentation',
-        file_name_list,
-        templateFile,
-        outputFile,
+        'HandlePresentationTasks',
+        fileNameList, templateFile, originalImage, newImage, outputFile,
       );
 
       return result;
@@ -40,20 +36,6 @@ const electronHandler = {
         'show-save-dialog',
         defaultPath,
         filters,
-      );
-
-      return result;
-    },
-    SwitchSideBanner: async (
-      pptxFile: string,
-      originalImage: string,
-      newImage: string,
-    ) => {
-      const result = await ipcRenderer.invoke(
-        'SwitchSideBanner',
-        pptxFile,
-        originalImage,
-        newImage,
       );
 
       return result;
