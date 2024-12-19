@@ -1,4 +1,4 @@
-import { Card, initializeCard } from './Card';
+import { Card, initializeCard } from '../renderer/elements/Card';
 
 export interface CardList {
   cards: Card[];

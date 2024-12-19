@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import StateManager from './StateManager';
+import StateManager from '../../types/StateManager';
 import { showSaveDialog, FileFilter } from '../utilities/createSaveAsDialog';
 
 class OutputFileSelector extends Component {

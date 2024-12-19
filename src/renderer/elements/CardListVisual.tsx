@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import CardVisual, { Card } from './Card';
-import CardManager from './CardManager';
+import CardManager from '../../types/CardManager';
 
 interface CardListVisualState {
   cards: Card[];

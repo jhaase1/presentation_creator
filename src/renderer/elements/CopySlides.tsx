@@ -1,10 +1,9 @@
-import StateManager from './StateManager';
+import StateManager from '../../types/StateManager';
 
 function CopySlidesButton() {
   async function OutputPresentation(
     fileNameList: string[],
     templateFile: string,
-    originalImage: string,
     newImage: string,
     outputFile: string,
   ) {
@@ -12,7 +11,6 @@ function CopySlidesButton() {
       const result = await window.electron.ipcRenderer.HandlePresentationTasks(
         fileNameList,
         templateFile,
-        originalImage,
         newImage,
         outputFile,
       );
