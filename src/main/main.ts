@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import tmp from 'tmp';
+import fs from 'fs';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -158,18 +158,8 @@ ipcMain.handle(
     outputFile,
   ) => {
     try {
-      const tempFile = tmp.fileSync({ postfix: '.pptx' });
-      // console.log('File: ', tempFile);
-
       // Run AddSlidesToPresentation first
-      const originalPPTX = outputFile ; //`C:/Users/haas1/Downloads/TESTFILE.pptx`;
-
-      addSlidesToPresentation(fileNameList, templateFile, newImage, originalPPTX);
-
-      // Then run SwitchSideBanner
-      // switchSideBanner(originalPPTX, originalImage, newImage, outputFile);
-
-      return { status: 'success' };
+      addSlidesToPresentation(fileNameList, templateFile, newImage, outputFile);
     } catch (error) {
       if (typeof error === 'string') {
         return { status: 'error', message: error };
@@ -178,5 +168,21 @@ ipcMain.handle(
         return { status: 'error', message: error.message };
       }
     }
+    return { status: 'success' };
   },
 );
+
+ipcMain.handle('export-state-as-yaml', async (event, filePath, contents) => {
+  try {
+    fs.writeFileSync(filePath, contents, 'utf8');
+  } catch (error) {
+    if (typeof error === 'string') {
+      return { status: 'error', message: error };
+    }
+    if (error instanceof Error) {
+      return { status: 'error', message: error.message };
+    }
+  }
+
+  return { status: 'success' };
+});

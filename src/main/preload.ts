@@ -22,11 +22,19 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
     HandlePresentationTasks: async (
-      fileNameList, templateFile, originalImage, newImage, outputFile,
+      fileNameList,
+      templateFile: string,
+      originalImage: string,
+      newImage: string,
+      outputFile: string,
     ) => {
       const result = await ipcRenderer.invoke(
         'HandlePresentationTasks',
-        fileNameList, templateFile, originalImage, newImage, outputFile,
+        fileNameList,
+        templateFile,
+        originalImage,
+        newImage,
+        outputFile,
       );
 
       return result;
@@ -36,6 +44,15 @@ const electronHandler = {
         'show-save-dialog',
         defaultPath,
         filters,
+      );
+
+      return result;
+    },
+    exportYAML: async (filePath: string, contents: string) => {
+      const result = await ipcRenderer.invoke(
+        'export-state-as-yaml',
+        filePath,
+        contents,
       );
 
       return result;

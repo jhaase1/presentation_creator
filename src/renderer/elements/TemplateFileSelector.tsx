@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StateManager } from './StateManager';
+import StateManager from './StateManager';
 
 class TemplateFileSelector extends Component {
   constructor(props: any) {

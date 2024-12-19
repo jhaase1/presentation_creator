@@ -1,6 +1,5 @@
-import React from 'react';
 import CardList from './CardList';
-import { StateManager } from './StateManager';
+import StateManager from './StateManager';
 
 const cardListInstance = new CardList();
 

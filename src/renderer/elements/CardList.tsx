@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Card, { CardData, initializeCard } from './Card';
 
-interface CardListState {
+export interface CardListState {
   cards: CardData[];
   windowHeight: number;
 }
