@@ -43,8 +43,6 @@ function CopySlidesButton() {
         return part.file;
       });
 
-      const originalImage = 'ppt/media/image1.png';
-
       await OutputPresentation(
         fileNameList,
         templateFile,
