@@ -1,20 +1,36 @@
 import React, { useRef } from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import { v4 as uuidv4 } from 'uuid';
+import jsyaml from 'js-yaml';
 
 const ItemTypes = {
   CARD: 'card',
 };
 
-export interface CardData {
+export interface Card {
   id: string;
   file: string | null;
   useSidebar: boolean;
   blankSlide: boolean;
 }
 
+export const cardYAMLType = new jsyaml.Type('!Card', {
+  kind: 'mapping',
+  construct: (data) => ({
+    file: data.file,
+    useSidebar: data.useSidebar,
+    blankSlide: data.blankSlide,
+  }),
+  instanceOf: Object,
+  represent: (card: Card) => ({
+    file: card.file,
+    useSidebar: card.useSidebar,
+    blankSlide: card.blankSlide,
+  }),
+});
+
 interface CardProps {
-  card: CardData;
+  card: Card;
   index: number;
   setFile: (id: string, filePath: string) => void;
   setUseSidebar: (id: string, useSidebar: boolean) => void;
@@ -35,16 +51,18 @@ const getTitleOrBasename = (part: any, filename: string | null): string => {
   return !part.title || part.title.trim() === '' ? name : part.title;
 };
 
-export const initializeCard = async (options: {
-  file?: string | null;
-  useSidebar?: boolean;
-  blankSlide?: boolean;
-} = {}): Promise<CardData> => {
+export const initializeCard = async (
+  options: {
+    file?: string | null;
+    useSidebar?: boolean;
+    blankSlide?: boolean;
+  } = {},
+): Promise<Card> => {
   const { file = null, useSidebar = false, blankSlide = true } = options;
 
   const id = uuidv4();
 
-  const newCard: CardData = {
+  const newCard: Card = {
     id,
     file,
     useSidebar,
@@ -53,7 +71,8 @@ export const initializeCard = async (options: {
 
   return newCard;
 };
-const Card: React.FC<CardProps> = ({
+
+const CardVisual: React.FC<CardProps> = ({
   card,
   index,
   setFile,
@@ -75,7 +94,10 @@ const Card: React.FC<CardProps> = ({
   // Drop functionality
   const [{ isOver }, drop] = useDrop({
     accept: ItemTypes.CARD,
-    hover: (item: { id: string; index: number }, monitor: DropTargetMonitor) => {
+    hover: (
+      item: { id: string; index: number },
+      monitor: DropTargetMonitor,
+    ) => {
       if (item.index !== index) {
         moveCard(item.index, index);
         item.index = index;
@@ -106,8 +128,10 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
-  const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const newFile = event.target.files && event.target.files[0];
+  const fileInputChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const newFile = event.target.files && event.target.files[0];
 
     if (newFile) {
       setFile(id, newFile.path);
@@ -145,7 +169,7 @@ const Card: React.FC<CardProps> = ({
             borderRadius: '5px',
           }}
         >
-          {file ? file : 'Select File'}
+          {file || 'Select File'}
           <input
             key={`fileInput-${id}`}
             id={`fileInput-${id}`}
@@ -192,4 +216,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default CardVisual;

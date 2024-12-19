@@ -1,7 +1,7 @@
-import CardList from './CardList';
+import CardListVisual from './CardList';
 import StateManager from './StateManager';
 
-const cardListInstance = new CardList();
+const cardListInstance = new CardListVisual();
 
 function CopySlidesButton() {
   async function OutputPresentation(

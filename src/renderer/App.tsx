@@ -7,7 +7,7 @@ import SidebarFileSelector from './elements/SidebarFileSelector';
 import TemplateFileSelector from './elements/TemplateFileSelector';
 import OutputFileSelector from './elements/OutputFileSelector';
 import CopySlidesButton from './elements/CopySlides';
-import CardList from './elements/CardList';
+import CardListVisual from './elements/CardList';
 
 function Hello() {
   const [yamlData, setYamlData] = useState<YAMLData | null>(null);
@@ -25,7 +25,7 @@ function Hello() {
         {/* Column 1 */}
         <div className="column column-wide">
           {/* Render the CardList component */}
-          <CardList />
+          <CardListVisual />
         </div>
         {/* Combined Column */}
         <div className="column column-narrow">

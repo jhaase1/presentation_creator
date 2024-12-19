@@ -1,29 +1,30 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Card, { CardData, initializeCard } from './Card';
+import jsyaml from 'js-yaml';
+import CardVisual, { Card, initializeCard, cardYAMLType } from './Card';
 
-export interface CardListState {
-  cards: CardData[];
+export interface CardList {
+  cards: Card[];
   windowHeight: number;
 }
 
-const defaultProps: CardListState = {
+const defaultProps: CardList = {
   cards: [],
   windowHeight: 500,
 };
 
-class CardList extends Component<{}, CardListState> {
-  private static instance: CardList | null = null;
+class CardListVisual extends Component<{}, CardList> {
+  private static instance: CardListVisual | null = null;
 
-  constructor(props: CardListState = defaultProps) {
+  constructor(props: CardList = defaultProps) {
     super(props);
 
-    if (CardList.instance) {
-      return CardList.instance;
+    if (CardListVisual.instance) {
+      return CardListVisual.instance;
     }
 
-    CardList.instance = this;
+    CardListVisual.instance = this;
 
     this.state = {
       cards: [],
@@ -43,7 +44,7 @@ class CardList extends Component<{}, CardListState> {
     this.setState({ windowHeight: window.innerHeight });
   };
 
-  addCard = (options: Partial<CardData> = {}) => {
+  addCard = (options: Partial<Card> = {}) => {
     const addCardAsync = async () => {
       const newCard = await initializeCard(options);
       this.setState((prevState) => ({
@@ -96,11 +97,11 @@ class CardList extends Component<{}, CardListState> {
     });
   };
 
-  setCards = (newCards: CardData[]) => {
+  setCards = (newCards: Card[]) => {
     this.setState({ cards: newCards });
   };
 
-  getCards = (): CardData[] => {
+  getCards = (): Card[] => {
     return this.state.cards;
   };
 
@@ -119,7 +120,7 @@ class CardList extends Component<{}, CardListState> {
           }}
         >
           {cards.map((card, index) => (
-            <Card
+            <CardVisual
               key={card.id}
               card={card}
               index={index}
@@ -146,4 +147,4 @@ class CardList extends Component<{}, CardListState> {
   }
 }
 
-export default CardList;
+export default CardListVisual;
