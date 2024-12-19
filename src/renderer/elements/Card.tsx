@@ -128,23 +128,6 @@ const CardVisual: React.FC<CardProps> = ({
     }
   };
 
-  const fileInputChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const newFile = event.target.files && event.target.files[0];
-
-    if (newFile) {
-      setFile(id, newFile.path);
-    }
-  };
-
-  const handleUseSidebarChange = () => {
-    setUseSidebar(id, !useSidebar);
-  };
-
-  const handleBlankSlideChange = () => {
-    setBlankSlide(id, !blankSlide);
-  };
   return (
     <div
       ref={cardRef}
