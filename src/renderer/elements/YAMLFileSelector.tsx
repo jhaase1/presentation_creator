@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import readYAMLFile from './readYAMLFile';
-import CardListVisual from './CardList';
+import CardManager from './CardManager';
 import StateManager from './StateManager';
 
 export interface YAMLData {
@@ -8,7 +8,7 @@ export interface YAMLData {
   parts_list?: any[];
 }
 
-const cardListInstance = new CardListVisual();
+const cardListInstance = new CardManager();
 
 const YAMLFileSelector: React.FC = () => {
   const [yamlData, setYamlData] = useState<YAMLData | null>(null);

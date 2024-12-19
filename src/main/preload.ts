@@ -24,7 +24,6 @@ const electronHandler = {
     HandlePresentationTasks: async (
       fileNameList,
       templateFile: string,
-      originalImage: string,
       newImage: string,
       outputFile: string,
     ) => {
@@ -32,7 +31,6 @@ const electronHandler = {
         'HandlePresentationTasks',
         fileNameList,
         templateFile,
-        originalImage,
         newImage,
         outputFile,
       );

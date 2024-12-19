@@ -1,7 +1,4 @@
-import CardListVisual from './CardList';
 import StateManager from './StateManager';
-
-const cardListInstance = new CardListVisual();
 
 function CopySlidesButton() {
   async function OutputPresentation(
@@ -32,7 +29,13 @@ function CopySlidesButton() {
 
   const insertAllSlides = async () => {
     try {
-      const parts = cardListInstance.getCards();
+      const state = StateManager.getInstance();
+
+      const templateFile = state.getTemplateFile();
+      const outputFile = state.getOutputFile();
+      const sidebarFile = state.getSidebarFile();
+
+      const parts = state.cards.getCards();
       const fileNameList: string[] = parts.flatMap((part) => {
         if (part.file === null) {
           return [];
@@ -40,18 +43,11 @@ function CopySlidesButton() {
         return part.file;
       });
 
-      const state = StateManager.getInstance();
-
-      const templateFile = state.getTemplateFile();
-      const outputFile = state.getOutputFile();
-      const sidebarFile = state.getSidebarFile();
-
       const originalImage = 'ppt/media/image1.png';
 
       await OutputPresentation(
         fileNameList,
         templateFile,
-        originalImage,
         sidebarFile,
         outputFile,
       );

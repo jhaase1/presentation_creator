@@ -1,10 +1,10 @@
 import jsyaml from 'js-yaml';
-import CardListVisual from './CardList';
+import CardManager from './CardManager';
 
 // const schema = jsyaml.DEFAULT_SCHEMA.extend([cardDataYamlType]);
 
 class StateManager {
-  cardList: CardListVisual;
+  cards: CardManager;
 
   private static instance: StateManager;
 
@@ -16,10 +16,10 @@ class StateManager {
 
   private listeners: Set<() => void> = new Set();
 
-  private cardListInstance: CardListVisual | null = null;
+  private cardManager: CardManager | null = null;
 
   private constructor() {
-    this.cardList = new CardListVisual();
+    this.cards = new CardManager();
   }
 
   static getInstance(): StateManager {
@@ -68,8 +68,8 @@ class StateManager {
     this.listeners.forEach((listener) => listener());
   }
 
-  getcardList(): CardListVisual | null {
-    return this.cardList;
+  getcardList(): CardManager | null {
+    return this.cards;
   }
 
   async exportStateAsYaml(
@@ -89,7 +89,7 @@ class StateManager {
     const state: any = {};
 
     if (options.cardList) {
-      state.cardList = this.cardListInstance;
+      state.cardList = this.cardManager;
     }
     if (options.outputFile) {
       state.outputFile = this.outputFile;

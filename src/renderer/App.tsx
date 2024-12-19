@@ -7,7 +7,7 @@ import SidebarFileSelector from './elements/SidebarFileSelector';
 import TemplateFileSelector from './elements/TemplateFileSelector';
 import OutputFileSelector from './elements/OutputFileSelector';
 import CopySlidesButton from './elements/CopySlides';
-import CardListVisual from './elements/CardList';
+import CardListVisual from './elements/CardListVisual';
 
 function Hello() {
   const [yamlData, setYamlData] = useState<YAMLData | null>(null);

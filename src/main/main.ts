@@ -153,7 +153,6 @@ ipcMain.handle(
     event,
     fileNameList,
     templateFile,
-    originalImage,
     newImage,
     outputFile,
   ) => {
