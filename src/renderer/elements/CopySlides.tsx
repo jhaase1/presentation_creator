@@ -1,13 +1,25 @@
 import StateManager from '../types/StateManager';
 
 function CopySlidesButton() {
-  async function OutputPresentation(
-    fileNameList: string[],
-    templateFile: string,
-    newImage: string,
-    outputFile: string,
-  ) {
+  const insertAllSlides = async () => {
     try {
+      const state = StateManager.getInstance();
+
+      // state.exportStateAsYaml(
+      //   'C:/Users/haas1/programming/presentation_creator/state.yaml',
+      // );
+
+      const fileNameList: string[] = state.getCards().flatMap((card) => {
+        if (card.file === null) {
+          return [];
+        }
+        return card.file;
+      });
+
+      const templateFile = state.getTemplateFile();
+      const newImage = state.getSidebarFile();
+      const outputFile = state.getOutputFile();
+
       const result = await window.electron.ipcRenderer.HandlePresentationTasks(
         fileNameList,
         templateFile,
@@ -23,40 +35,15 @@ function CopySlidesButton() {
     } catch (error) {
       console.error('IPC invocation error:', error);
     }
-  }
-
-  const insertAllSlides = async () => {
-    try {
-      const state = StateManager.getInstance();
-
-      const templateFile = state.getTemplateFile();
-      const outputFile = state.getOutputFile();
-      const sidebarFile = state.getSidebarFile();
-
-      state.exportStateAsYaml("C:/Users/haas1/programming/presentation_creator/state.yaml");
-
-      const parts = state.cards.getCards();
-      const fileNameList: string[] = parts.flatMap((part) => {
-        if (part.file === null) {
-          return [];
-        }
-        return part.file;
-      });
-
-      await OutputPresentation(
-        fileNameList,
-        templateFile,
-        sidebarFile,
-        outputFile,
-      );
-    } catch (error) {
-      console.error('Filenames not determined, error:', error);
-    }
   };
 
   return (
     <div>
-      <button onClick={insertAllSlides} style={{ marginTop: '16px' }}>
+      <button
+        type="button"
+        onClick={insertAllSlides}
+        style={{ marginTop: '16px' }}
+      >
         Copy Slides to Presentation
       </button>
     </div>

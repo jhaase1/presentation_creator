@@ -1,6 +1,8 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { FileFilter } from '../renderer/utilities/createSaveAsDialog';
+import StateManager from '../renderer/types/StateManager';
 
 export type Channels = 'ipc-example';
 
@@ -22,7 +24,7 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
     HandlePresentationTasks: async (
-      fileNameList,
+      fileNameList: string[],
       templateFile: string,
       newImage: string,
       outputFile: string,

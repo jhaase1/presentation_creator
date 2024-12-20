@@ -2,10 +2,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import ItemTypes from '../types/ItemTypes';
-import CardManager from '../types/CardManager';
+import StateManager from '../types/StateManager';
 import Card from '../types/Card';
 
-const cardManager = CardManager.getInstance();
+const stateManager = StateManager.getInstance();
 interface CardProps {
   card: Card;
   index: number;
@@ -46,7 +46,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       monitor: DropTargetMonitor,
     ) => {
       if (item.index !== index) {
-        cardManager.moveCard(item.index, index);
+        stateManager.moveCard(item.index, index);
         item.index = index;
       }
     },
@@ -132,7 +132,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       </div>
       <button
         type="button"
-        onClick={() => cardManager.deleteCard(card.getID())}
+        onClick={() => stateManager.deleteCard(card.getID())}
         style={{
           color: 'white',
           backgroundColor: '#d9534f',

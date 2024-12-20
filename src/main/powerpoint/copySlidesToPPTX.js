@@ -4,6 +4,8 @@ import Automizer, {
   ModifyImageHelper,
 } from 'pptx-automizer/dist';
 
+import StateManager from '../../renderer/types/StateManager';
+
 const path = require('path');
 
 async function getSlideNumbers(pres, source) {

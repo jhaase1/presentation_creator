@@ -1,15 +1,9 @@
 import jsyaml from 'js-yaml';
-import CardManager, { CardManagerYAMLType } from './CardManager';
 import Card, { cardYAMLType } from './Card';
 
-const schema = jsyaml.DEFAULT_SCHEMA.extend([
-  cardYAMLType,
-  CardManagerYAMLType,
-]);
+const schema = jsyaml.DEFAULT_SCHEMA.extend([cardYAMLType]);
 
 class StateManager {
-  cards: CardManager;
-
   private static instance: StateManager;
 
   private templateFile: string | null = null;
@@ -20,17 +14,28 @@ class StateManager {
 
   private listeners: Set<() => void> = new Set();
 
-  private cardManager: CardManager | null = null;
+  private cards: Card[] = [];
 
-  private constructor() {
-    this.cards = new CardManager();
-  }
+  private constructor() {}
 
   static getInstance(): StateManager {
     if (!StateManager.instance) {
       StateManager.instance = new StateManager();
     }
     return StateManager.instance;
+  }
+
+  // Listener functionality
+  onFileChange(listener: () => void): void {
+    this.listeners.add(listener);
+  }
+
+  offFileChange(listener: () => void): void {
+    this.listeners.delete(listener);
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach((listener) => listener());
   }
 
   getTemplateFile(): string | null {
@@ -60,21 +65,32 @@ class StateManager {
     this.notifyListeners();
   }
 
-  onFileChange(listener: () => void): void {
-    this.listeners.add(listener);
-  }
+  addCard = (options: Partial<Card> = {}) => {
+    const newCard = new Card(
+      options.file,
+      options.useSidebar,
+      options.blankSlide,
+    );
+    this.cards = [...this.cards, newCard];
+    this.notifyListeners();
+  };
 
-  offFileChange(listener: () => void): void {
-    this.listeners.delete(listener);
-  }
+  deleteCard = (id: string) => {
+    this.cards = this.cards.filter((card) => card.getID() !== id);
+    this.notifyListeners();
+  };
 
-  private notifyListeners(): void {
-    this.listeners.forEach((listener) => listener());
-  }
+  moveCard = (fromIndex: number, toIndex: number) => {
+    const cards = [...this.cards];
+    const [removed] = cards.splice(fromIndex, 1);
+    cards.splice(toIndex, 0, removed);
+    this.cards = cards;
+    this.notifyListeners();
+  };
 
-  getcardList(): CardManager | null {
+  getCards = (): Card[] => {
     return this.cards;
-  }
+  };
 
   async exportStateAsYaml(
     filePath: string,
@@ -102,12 +118,10 @@ class StateManager {
       state.outputFile = this.outputFile;
     }
     if (options.cardList) {
-      state.cards = this.cards.getCards();
+      state.cards = this.cards;
     }
 
-    console.log("I'm here");
     const yamlStr = jsyaml.dump(state, { schema });
-    console.log(yamlStr);
 
     await window.electron.ipcRenderer.exportYAML(filePath, yamlStr);
   }

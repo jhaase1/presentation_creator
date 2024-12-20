@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import CardVisual from './CardVisual';
-import CardManager from '../types/CardManager';
+import StateManager from '../types/StateManager';
 import Card from '../types/Card';
 
 interface CardListVisualState {
@@ -11,25 +11,25 @@ interface CardListVisualState {
 }
 
 class CardListVisual extends Component<{}, CardListVisualState> {
-  private cardManager: CardManager;
+  private stateManager: StateManager;
 
   constructor(props: {}) {
     super(props);
-    this.cardManager = CardManager.getInstance();
+    this.stateManager = StateManager.getInstance();
     this.state = {
-      cards: this.cardManager.getCards(),
+      cards: this.stateManager.getCards(),
       windowHeight: window.innerHeight,
     };
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
-    this.cardManager.addListener(this.updateCards);
+    this.stateManager.onFileChange(this.updateCards);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-    this.cardManager.removeListener(this.updateCards);
+    this.stateManager.offFileChange(this.updateCards);
   }
 
   handleResize = () => {
@@ -37,7 +37,7 @@ class CardListVisual extends Component<{}, CardListVisualState> {
   };
 
   updateCards = () => {
-    this.setState({ cards: this.cardManager.getCards() });
+    this.setState({ cards: this.stateManager.getCards() });
   };
 
   renderCards() {
@@ -59,8 +59,8 @@ class CardListVisual extends Component<{}, CardListVisualState> {
               key={card.id}
               card={card}
               index={index}
-              moveCard={this.cardManager.moveCard}
-              deleteCard={this.cardManager.deleteCard}
+              moveCard={this.stateManager.moveCard}
+              deleteCard={this.stateManager.deleteCard}
             />
           ))}
         </div>
@@ -72,7 +72,7 @@ class CardListVisual extends Component<{}, CardListVisualState> {
     return (
       <div>
         {this.renderCards()}
-        <button type="button" onClick={() => this.cardManager.addCard()}>
+        <button type="button" onClick={() => this.stateManager.addCard()}>
           Add Additional Element
         </button>
       </div>

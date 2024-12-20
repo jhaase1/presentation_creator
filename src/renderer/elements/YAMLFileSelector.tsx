@@ -1,6 +1,6 @@
+/* eslint-disable react/function-component-definition */
 import React, { useEffect, useState } from 'react';
 import readYAMLFile from './readYAMLFile';
-import CardManager from '../types/CardManager';
 import StateManager from '../types/StateManager';
 
 export interface YAMLData {
@@ -8,7 +8,7 @@ export interface YAMLData {
   parts_list?: any[];
 }
 
-const cardListInstance = new CardManager();
+const stateManager = StateManager.getInstance();
 
 const YAMLFileSelector: React.FC = () => {
   const [yamlData, setYamlData] = useState<YAMLData | null>(null);
@@ -17,7 +17,7 @@ const YAMLFileSelector: React.FC = () => {
     // Initialize parts based on parts_list
     if (yamlData?.parts_list) {
       yamlData.parts_list.forEach((obj: any) => {
-        cardListInstance.addCard(obj);
+        stateManager.addCard(obj);
       });
     }
 
@@ -62,12 +62,6 @@ const YAMLFileSelector: React.FC = () => {
     }
   };
 
-  const containerStyle: React.CSSProperties = {
-    maxWidth: '400px',
-    overflowX: 'auto',
-    margin: '0 auto', // Center the content
-  };
-
   return (
     <div>
       {/* File Selector */}
@@ -93,6 +87,7 @@ const YAMLFileSelector: React.FC = () => {
 
         {/* Button to trigger file input */}
         <button
+          type="button"
           onClick={() => {
             const fileInput = document.querySelector(
               '#yaml_file_input',

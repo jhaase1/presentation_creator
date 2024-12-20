@@ -1,4 +1,4 @@
-type FileFilter = {
+export type FileFilter = {
   name: string;
   extensions: string[];
 };
