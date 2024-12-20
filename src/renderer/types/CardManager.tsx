@@ -68,33 +68,6 @@ class CardManager {
     this.notifyListeners();
   };
 
-  setBlankSlide = (id: string, blankSlide: boolean) => {
-    this.state.cards = this.state.cards.map((card) =>
-      card.getID() === id
-        ? new Card(card.file, card.useSidebar, blankSlide)
-        : card,
-    );
-    this.notifyListeners();
-  };
-
-  setUseSidebar = (id: string, useSidebar: boolean) => {
-    this.state.cards = this.state.cards.map((card) =>
-      card.getID() === id
-        ? new Card(card.file, useSidebar, card.blankSlide)
-        : card,
-    );
-    this.notifyListeners();
-  };
-
-  setFile = (id: string, file: string) => {
-    this.state.cards = this.state.cards.map((card) =>
-      card.getID() === id
-        ? new Card(file, card.useSidebar, card.blankSlide)
-        : card,
-    );
-    this.notifyListeners();
-  };
-
   getCards = (): Card[] => {
     return this.state.cards;
   };

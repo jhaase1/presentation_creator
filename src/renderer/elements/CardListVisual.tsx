@@ -59,9 +59,6 @@ class CardListVisual extends Component<{}, CardListVisualState> {
               key={card.id}
               card={card}
               index={index}
-              setFile={this.cardManager.setFile}
-              setUseSidebar={this.cardManager.setUseSidebar}
-              setBlankSlide={this.cardManager.setBlankSlide}
               moveCard={this.cardManager.moveCard}
               deleteCard={this.cardManager.deleteCard}
             />
