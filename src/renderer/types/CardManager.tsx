@@ -1,4 +1,5 @@
-import Card from './Card';
+import jsyaml from 'js-yaml';
+import Card, { cardYAMLType } from './Card';
 
 export interface CardList {
   cards: Card[];
@@ -98,5 +99,22 @@ class CardManager {
     return this.state.cards;
   };
 }
+
+const schema = jsyaml.DEFAULT_SCHEMA.extend([cardYAMLType]);
+
+export const CardManagerYAMLType = new jsyaml.Type('!CardManager', {
+  kind: 'sequence',
+  instanceOf: CardManager,
+  construct(data) {
+    return new CardManager(
+      data.map((cardData: any) => jsyaml.load(cardData, { schema })),
+    );
+  },
+  represent(cardManager) {
+    return cardManager
+      .getCards()
+      .map((card: Card) => jsyaml.dump(card, { schema }));
+  },
+});
 
 export default CardManager;

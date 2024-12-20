@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import StateManager from '../../types/StateManager';
+import StateManager from '../types/StateManager';
 
 class SidebarFileSelector extends Component {
   constructor(props: any) {

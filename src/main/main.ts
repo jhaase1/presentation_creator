@@ -149,13 +149,7 @@ app
 
 ipcMain.handle(
   'HandlePresentationTasks',
-  async (
-    event,
-    fileNameList,
-    templateFile,
-    newImage,
-    outputFile,
-  ) => {
+  async (event, fileNameList, templateFile, newImage, outputFile) => {
     try {
       // Run AddSlidesToPresentation first
       addSlidesToPresentation(fileNameList, templateFile, newImage, outputFile);

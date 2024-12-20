@@ -1,9 +1,9 @@
 /* eslint-disable react/function-component-definition */
 import React, { useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
-import ItemTypes from '../../types/ItemTypes';
-import CardManager from '../../types/CardManager';
-import Card from '../../types/Card';
+import ItemTypes from '../types/ItemTypes';
+import CardManager from '../types/CardManager';
+import Card from '../types/Card';
 
 const cardManager = CardManager.getInstance();
 interface CardProps {

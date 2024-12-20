@@ -1,4 +1,4 @@
-import StateManager from '../../types/StateManager';
+import StateManager from '../types/StateManager';
 
 function CopySlidesButton() {
   async function OutputPresentation(
@@ -32,6 +32,8 @@ function CopySlidesButton() {
       const templateFile = state.getTemplateFile();
       const outputFile = state.getOutputFile();
       const sidebarFile = state.getSidebarFile();
+
+      state.exportStateAsYaml("C:/Users/haas1/programming/presentation_creator/state.yaml");
 
       const parts = state.cards.getCards();
       const fileNameList: string[] = parts.flatMap((part) => {

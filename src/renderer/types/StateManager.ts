@@ -1,7 +1,11 @@
 import jsyaml from 'js-yaml';
-import CardManager from './CardManager';
+import CardManager, { CardManagerYAMLType } from './CardManager';
+import Card, { cardYAMLType } from './Card';
 
-// const schema = jsyaml.DEFAULT_SCHEMA.extend([cardDataYamlType]);
+const schema = jsyaml.DEFAULT_SCHEMA.extend([
+  cardYAMLType,
+  CardManagerYAMLType,
+]);
 
 class StateManager {
   cards: CardManager;
@@ -75,33 +79,36 @@ class StateManager {
   async exportStateAsYaml(
     filePath: string,
     options: {
-      cardList?: boolean;
-      outputFile?: boolean;
-      sidebarFile?: boolean;
       templateFile?: boolean;
+      sidebarFile?: boolean;
+      outputFile?: boolean;
+      cardList?: boolean;
     } = {
-      cardList: true,
-      outputFile: true,
-      sidebarFile: true,
       templateFile: true,
+      sidebarFile: true,
+      outputFile: true,
+      cardList: true,
     },
   ): Promise<void> {
     const state: any = {};
 
-    if (options.cardList) {
-      state.cardList = this.cardManager;
-    }
-    if (options.outputFile) {
-      state.outputFile = this.outputFile;
+    if (options.templateFile) {
+      state.templateFile = this.templateFile;
     }
     if (options.sidebarFile) {
       state.sidebarFile = this.sidebarFile;
     }
-    if (options.templateFile) {
-      state.templateFile = this.templateFile;
+    if (options.outputFile) {
+      state.outputFile = this.outputFile;
+    }
+    if (options.cardList) {
+      state.cards = this.cards.getCards();
     }
 
-    const yamlStr = jsyaml.dump(state);
+    console.log("I'm here");
+    const yamlStr = jsyaml.dump(state, { schema });
+    console.log(yamlStr);
+
     await window.electron.ipcRenderer.exportYAML(filePath, yamlStr);
   }
 }

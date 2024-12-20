@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import readYAMLFile from './readYAMLFile';
-import CardManager from '../../types/CardManager';
-import StateManager from '../../types/StateManager';
+import CardManager from '../types/CardManager';
+import StateManager from '../types/StateManager';
 
 export interface YAMLData {
   side_bar_file?: any;
