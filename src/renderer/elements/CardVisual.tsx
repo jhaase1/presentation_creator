@@ -1,94 +1,41 @@
-import React, { useRef } from 'react';
+/* eslint-disable react/function-component-definition */
+import React, { useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
-import { v4 as uuidv4 } from 'uuid';
-import jsyaml from 'js-yaml';
+import ItemTypes from '../../types/ItemTypes';
+import CardManager from '../../types/CardManager';
+import Card from '../../types/Card';
 
-const ItemTypes = {
-  CARD: 'card',
-};
-
-export interface Card {
-  id: string;
-  file: string | null;
-  useSidebar: boolean;
-  blankSlide: boolean;
-}
-
-export const cardYAMLType = new jsyaml.Type('!Card', {
-  kind: 'mapping',
-  construct: (data) => ({
-    file: data.file,
-    useSidebar: data.useSidebar,
-    blankSlide: data.blankSlide,
-  }),
-  instanceOf: Object,
-  represent: (card: Card) => ({
-    file: card.file,
-    useSidebar: card.useSidebar,
-    blankSlide: card.blankSlide,
-  }),
-});
-
+const cardManager = CardManager.getInstance();
 interface CardProps {
   card: Card;
   index: number;
-  setFile: (id: string, filePath: string) => void;
-  setUseSidebar: (id: string, useSidebar: boolean) => void;
-  setBlankSlide: (id: string, blankSlide: boolean) => void;
-  moveCard: (fromIndex: number, toIndex: number) => void;
-  deleteCard: (id: string) => void;
 }
 
-const getTitleOrBasename = (part: any, filename: string | null): string => {
-  if (typeof filename !== 'string') {
-    return part.title;
-  }
-
-  const parts = filename.split(/[\\/]/);
-  const basename = parts[parts.length - 1];
-  const name = basename.split('.').slice(0, -1).join('.');
-
-  return !part.title || part.title.trim() === '' ? name : part.title;
-};
-
-export const initializeCard = async (
-  options: {
-    file?: string | null;
-    useSidebar?: boolean;
-    blankSlide?: boolean;
-  } = {},
-): Promise<Card> => {
-  const { file = null, useSidebar = false, blankSlide = true } = options;
-
-  const id = uuidv4();
-
-  const newCard: Card = {
-    id,
-    file,
-    useSidebar,
-    blankSlide,
-  };
-
-  return newCard;
-};
-
-const CardVisual: React.FC<CardProps> = ({
-  card,
-  index,
-  setFile,
-  setUseSidebar,
-  setBlankSlide,
-  moveCard,
-  deleteCard,
-}) => {
-  const { id, file, useSidebar, blankSlide } = card;
+const CardVisual: React.FC<CardProps> = ({ card, index }) => {
+  const [file, setFile] = useState(card.getFile());
+  const [useSidebar, setUseSidebar] = useState(card.getUseSidebar());
+  const [blankSlide, setBlankSlide] = useState(card.getBlankSlide());
 
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleCardChange = () => {
+      setFile(card.getFile());
+      setUseSidebar(card.getUseSidebar());
+      setBlankSlide(card.getBlankSlide());
+    };
+
+    card.addListener(handleCardChange);
+
+    return () => {
+      card.removeListener(handleCardChange);
+    };
+  }, [card]);
 
   // Drag functionality
   const [, drag] = useDrag({
     type: ItemTypes.CARD,
-    item: { id, index },
+    item: { id: card.getID(), index },
   });
 
   // Drop functionality
@@ -99,7 +46,7 @@ const CardVisual: React.FC<CardProps> = ({
       monitor: DropTargetMonitor,
     ) => {
       if (item.index !== index) {
-        moveCard(item.index, index);
+        cardManager.moveCard(item.index, index);
         item.index = index;
       }
     },
@@ -115,16 +62,13 @@ const CardVisual: React.FC<CardProps> = ({
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-
     const droppedFile = event.dataTransfer.files?.[0];
-
     if (
       droppedFile &&
       droppedFile.type ===
         'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     ) {
-      // Handle file drop
-      setFile(id, droppedFile.path);
+      card.setFile(droppedFile.path);
     }
   };
 
@@ -144,7 +88,7 @@ const CardVisual: React.FC<CardProps> = ({
     >
       <div style={{ display: 'grid', gap: '8px' }}>
         <label
-          htmlFor={`fileInput-${id}`}
+          htmlFor={`fileInput-${card.getID()}`}
           style={{
             cursor: 'pointer',
             padding: '8px',
@@ -154,38 +98,41 @@ const CardVisual: React.FC<CardProps> = ({
         >
           {file || 'Select File'}
           <input
-            key={`fileInput-${id}`}
-            id={`fileInput-${id}`}
+            key={`fileInput-${card.getID()}`}
+            id={`fileInput-${card.getID()}`}
             type="file"
             accept=".pptx"
             style={{ display: 'none' }}
             onChange={(e) => {
               const newFile = e.target.files?.[0];
-              if (newFile) setFile(id, newFile.path);
+              if (newFile) card.setFile(newFile.path);
             }}
           />
         </label>
 
-        <label>
+        <label htmlFor={`useSidebar-${card.getID()}`}>
           <input
+            id={`useSidebar-${card.getID()}`}
             type="checkbox"
             checked={useSidebar}
-            onChange={() => setUseSidebar(id, !useSidebar)}
+            onChange={() => card.setUseSidebar(!useSidebar)}
           />
           Use Sidebar
         </label>
 
-        <label>
+        <label htmlFor={`blankSlide-${card.getID()}`}>
           <input
+            id={`blankSlide-${card.getID()}`}
             type="checkbox"
             checked={blankSlide}
-            onChange={() => setBlankSlide(id, !blankSlide)}
+            onChange={() => card.setBlankSlide(!blankSlide)}
           />
           Insert blank slide after
         </label>
       </div>
       <button
-        onClick={() => deleteCard(id)}
+        type="button"
+        onClick={() => cardManager.deleteCard(card.getID())}
         style={{
           color: 'white',
           backgroundColor: '#d9534f',

@@ -1,4 +1,4 @@
-import { Card, initializeCard } from '../renderer/elements/Card';
+import Card from './Card';
 
 export interface CardList {
   cards: Card[];
@@ -44,14 +44,18 @@ class CardManager {
     this.listeners.forEach((listener) => listener());
   }
 
-  addCard = async (options: Partial<Card> = {}) => {
-    const newCard = await initializeCard(options);
+  addCard = (options: Partial<Card> = {}) => {
+    const newCard = new Card(
+      options.file,
+      options.useSidebar,
+      options.blankSlide,
+    );
     this.state.cards = [...this.state.cards, newCard];
     this.notifyListeners();
   };
 
   deleteCard = (id: string) => {
-    this.state.cards = this.state.cards.filter((card) => card.id !== id);
+    this.state.cards = this.state.cards.filter((card) => card.getID() !== id);
     this.notifyListeners();
   };
 
@@ -65,21 +69,27 @@ class CardManager {
 
   setBlankSlide = (id: string, blankSlide: boolean) => {
     this.state.cards = this.state.cards.map((card) =>
-      card.id === id ? { ...card, blankSlide } : card,
+      card.getID() === id
+        ? new Card(card.file, card.useSidebar, blankSlide)
+        : card,
     );
     this.notifyListeners();
   };
 
   setUseSidebar = (id: string, useSidebar: boolean) => {
     this.state.cards = this.state.cards.map((card) =>
-      card.id === id ? { ...card, useSidebar } : card,
+      card.getID() === id
+        ? new Card(card.file, useSidebar, card.blankSlide)
+        : card,
     );
     this.notifyListeners();
   };
 
   setFile = (id: string, file: string) => {
     this.state.cards = this.state.cards.map((card) =>
-      card.id === id ? { ...card, file } : card,
+      card.getID() === id
+        ? new Card(file, card.useSidebar, card.blankSlide)
+        : card,
     );
     this.notifyListeners();
   };

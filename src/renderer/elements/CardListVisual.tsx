@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import CardVisual, { Card } from './Card';
+import CardVisual from './CardVisual';
 import CardManager from '../../types/CardManager';
+import Card from '../../types/Card';
 
 interface CardListVisualState {
   cards: Card[];
@@ -74,7 +75,7 @@ class CardListVisual extends Component<{}, CardListVisualState> {
     return (
       <div>
         {this.renderCards()}
-        <button onClick={() => this.cardManager.addCard()}>
+        <button type="button" onClick={() => this.cardManager.addCard()}>
           Add Additional Element
         </button>
       </div>
