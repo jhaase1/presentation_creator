@@ -1,3 +1,4 @@
+import jsyaml from 'js-yaml';
 import StateManager from '../types/StateManager';
 
 function CopySlidesButton() {
@@ -20,7 +21,7 @@ function CopySlidesButton() {
       const newImage = state.getSidebarFile();
       const outputFile = state.getOutputFile();
 
-      const result = await window.electron.ipcRenderer.HandlePresentationTasks(
+      const result = await window.electron.ipcRenderer.mergePresentations(
         fileNameList,
         templateFile,
         newImage,

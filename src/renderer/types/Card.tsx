@@ -75,7 +75,7 @@ export const cardYAMLType = new jsyaml.Type('!Card', {
     useSidebar: data.useSidebar,
     blankSlide: data.blankSlide,
   }),
-  represent: (card: Card) => ({
+  represent: (card: any) => ({
     file: card.file,
     useSidebar: card.useSidebar,
     blankSlide: card.blankSlide,

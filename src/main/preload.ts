@@ -23,14 +23,14 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    HandlePresentationTasks: async (
+    mergePresentations: async (
       fileNameList: string[],
       templateFile: string,
       newImage: string,
       outputFile: string,
     ) => {
       const result = await ipcRenderer.invoke(
-        'HandlePresentationTasks',
+        'merge-presentations',
         fileNameList,
         templateFile,
         newImage,
@@ -48,9 +48,9 @@ const electronHandler = {
 
       return result;
     },
-    exportYAML: async (filePath: string, contents: string) => {
+    writeTextFile: async (filePath: string, contents: string) => {
       const result = await ipcRenderer.invoke(
-        'export-state-as-yaml',
+        'write-text-file',
         filePath,
         contents,
       );

@@ -148,7 +148,7 @@ app
   .catch(console.log);
 
 ipcMain.handle(
-  'HandlePresentationTasks',
+  'merge-presentations',
   async (event, fileNameList, templateFile, newImage, outputFile) => {
     try {
       // Run AddSlidesToPresentation first
@@ -165,7 +165,7 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle('export-state-as-yaml', async (event, filePath, contents) => {
+ipcMain.handle('write-text-file', async (event, filePath, contents) => {
   try {
     fs.writeFileSync(filePath, contents, 'utf8');
   } catch (error) {

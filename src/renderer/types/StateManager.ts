@@ -1,8 +1,6 @@
 import jsyaml from 'js-yaml';
 import Card, { cardYAMLType } from './Card';
 
-const schema = jsyaml.DEFAULT_SCHEMA.extend([cardYAMLType]);
-
 class StateManager {
   private static instance: StateManager;
 
@@ -12,9 +10,9 @@ class StateManager {
 
   private outputFile: string | null = null;
 
-  private listeners: Set<() => void> = new Set();
-
   private cards: Card[] = [];
+
+  private listeners: Set<() => void> = new Set();
 
   private constructor() {}
 
@@ -75,6 +73,12 @@ class StateManager {
     this.notifyListeners();
   };
 
+  splitCards = (index: number, ...userCards: Card[] | [Card[]]) => {
+    const cards: Card[] = userCards.flat();
+    this.cards.splice(index, 0, ...cards);
+    this.notifyListeners();
+  };
+
   deleteCard = (id: string) => {
     this.cards = this.cards.filter((card) => card.getID() !== id);
     this.notifyListeners();
@@ -91,40 +95,29 @@ class StateManager {
   getCards = (): Card[] => {
     return this.cards;
   };
-
-  async exportStateAsYaml(
-    filePath: string,
-    options: {
-      templateFile?: boolean;
-      sidebarFile?: boolean;
-      outputFile?: boolean;
-      cardList?: boolean;
-    } = {
-      templateFile: true,
-      sidebarFile: true,
-      outputFile: true,
-      cardList: true,
-    },
-  ): Promise<void> {
-    const state: any = {};
-
-    if (options.templateFile) {
-      state.templateFile = this.templateFile;
-    }
-    if (options.sidebarFile) {
-      state.sidebarFile = this.sidebarFile;
-    }
-    if (options.outputFile) {
-      state.outputFile = this.outputFile;
-    }
-    if (options.cardList) {
-      state.cards = this.cards;
-    }
-
-    const yamlStr = jsyaml.dump(state, { schema });
-
-    await window.electron.ipcRenderer.exportYAML(filePath, yamlStr);
-  }
 }
 
+export const StateManagerYAMLType = new jsyaml.Type('!StateManager', {
+  kind: 'mapping',
+  instanceOf: StateManager,
+  construct: (data) => ({
+    templateFile: data.templateFile,
+    sidebarFile: data.sidebarFile,
+    outputFile: data.outputFile,
+    cards: data.cards,
+  }),
+  represent: (state: any) => ({
+    templateFile: state.getTemplateFile(),
+    sidebarFile: state.getSidebarFile(),
+    outputFile: state.getOutputFile(),
+    cards: state.getCards(),
+  }),
+});
+
+const schema = jsyaml.DEFAULT_SCHEMA.extend([
+  cardYAMLType,
+  StateManagerYAMLType,
+]);
+
 export default StateManager;
+export { schema };
