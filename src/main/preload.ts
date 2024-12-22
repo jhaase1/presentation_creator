@@ -23,19 +23,8 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    mergePresentations: async (
-      fileNameList: string[],
-      templateFile: string,
-      newImage: string,
-      outputFile: string,
-    ) => {
-      const result = await ipcRenderer.invoke(
-        'merge-presentations',
-        fileNameList,
-        templateFile,
-        newImage,
-        outputFile,
-      );
+    mergePresentations: async (yamlState: string) => {
+      const result = await ipcRenderer.invoke('merge-presentations', yamlState);
 
       return result;
     },

@@ -1,11 +1,11 @@
 import jsyaml from 'js-yaml';
 import StateManager, { schema } from '../types/StateManager';
 
-export function dumpStateManager(data: any): string {
+export function dump(data: any): string {
   return jsyaml.dump(data, { schema });
 }
 
-export function loadStateManager(data: any): any {
+export function load(data: any): any {
   return jsyaml.load(data, { schema });
 }
 

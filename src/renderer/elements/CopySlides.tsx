@@ -1,32 +1,36 @@
-import jsyaml from 'js-yaml';
 import StateManager from '../types/StateManager';
+import { dump, writeTextFile } from '../utilities/yamlFunctions';
 
 function CopySlidesButton() {
   const insertAllSlides = async () => {
     try {
       const state = StateManager.getInstance();
+      const yamlState = dump(state);
 
-      // state.exportStateAsYaml(
-      //   'C:/Users/haas1/programming/presentation_creator/state.yaml',
-      // );
-
-      const fileNameList: string[] = state.getCards().flatMap((card) => {
-        if (card.file === null) {
-          return [];
-        }
-        return card.file;
-      });
-
-      const templateFile = state.getTemplateFile();
-      const newImage = state.getSidebarFile();
       const outputFile = state.getOutputFile();
 
-      const result = await window.electron.ipcRenderer.mergePresentations(
-        fileNameList,
-        templateFile,
-        newImage,
-        outputFile,
-      );
+      if (outputFile === null) {
+        console.error('Output file file not set');
+        return;
+      }
+
+      const yamlFile = outputFile.replace(/\.[^/.]+$/, '.yaml');
+
+      writeTextFile(yamlFile, yamlState);
+
+      // const fileNameList: string[] = state.getCards().flatMap((card) => {
+      //   if (card.file === null) {
+      //     return [];
+      //   }
+      //   return card.file;
+      // });
+
+      // const templateFile = state.getTemplateFile();
+      // const newImage = state.getSidebarFile();
+      // const outputFile = state.getOutputFile();
+
+      const result =
+        await window.electron.ipcRenderer.mergePresentations(yamlState);
 
       if (result.status === 'success') {
         console.log('Slides added successfully');

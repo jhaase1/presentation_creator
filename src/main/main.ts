@@ -147,23 +147,20 @@ app
   })
   .catch(console.log);
 
-ipcMain.handle(
-  'merge-presentations',
-  async (event, fileNameList, templateFile, newImage, outputFile) => {
-    try {
-      // Run AddSlidesToPresentation first
-      addSlidesToPresentation(fileNameList, templateFile, newImage, outputFile);
-    } catch (error) {
-      if (typeof error === 'string') {
-        return { status: 'error', message: error };
-      }
-      if (error instanceof Error) {
-        return { status: 'error', message: error.message };
-      }
+ipcMain.handle('merge-presentations', async (event, yamlState: string) => {
+  try {
+    // Run AddSlidesToPresentation first
+    addSlidesToPresentation(yamlState);
+  } catch (error) {
+    if (typeof error === 'string') {
+      return { status: 'error', message: error };
     }
-    return { status: 'success' };
-  },
-);
+    if (error instanceof Error) {
+      return { status: 'error', message: error.message };
+    }
+  }
+  return { status: 'success' };
+});
 
 ipcMain.handle('write-text-file', async (event, filePath, contents) => {
   try {

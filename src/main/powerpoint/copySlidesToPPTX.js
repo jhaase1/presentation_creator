@@ -4,6 +4,8 @@ import Automizer, {
   ModifyImageHelper,
 } from 'pptx-automizer/dist';
 
+import { load } from '../../renderer/utilities/yamlFunctions';
+
 const path = require('path');
 
 async function getSlideNumbers(pres, source) {
@@ -51,7 +53,18 @@ async function adjustSlideElements(slide) {
   });
 }
 
-async function processFile(inputFile, pres) {
+async function processFile(card, pres) {
+  console.log(card);
+  const inputFile = card.file;
+
+  let slideLayout;
+
+  if (card.useSidebar) {
+    slideLayout = 15;
+  } else {
+    slideLayout = 9;
+  }
+
   try {
     await pres.load(inputFile);
 
@@ -62,7 +75,7 @@ async function processFile(inputFile, pres) {
       pres.addSlide(inputFile, slideNumber, (slide) => {
         adjustSlideElements(slide);
         // console.log("I think I'm changing slide layout");
-        slide.useSlideLayout(15);
+        slide.useSlideLayout(slideLayout);
       });
     }
   } catch (error) {
@@ -70,19 +83,17 @@ async function processFile(inputFile, pres) {
   }
 }
 
-async function addSlidesToPresentation(
-  files,
-  templateFile,
-  newImage,
-  outputFile,
-) {
+async function addSlidesToPresentation(yamlState) {
+  const stateObj = load(yamlState);
+  const { templateFile, sidebarFile, outputFile, cards } = stateObj;
+
+  const imageDir = path.dirname(sidebarFile);
+  const imageFile = path.basename(sidebarFile);
+
   const automizer = new Automizer({
     removeExistingSlides: true,
     cleanup: true,
   });
-
-  const imageDir = path.dirname(newImage);
-  const imageFile = path.basename(newImage);
 
   const pres = automizer
     .loadRoot(templateFile)
@@ -95,8 +106,8 @@ async function addSlidesToPresentation(
     ]);
   });
 
-  for (const file of files) {
-    await processFile(file, pres);
+  for (const card of cards) {
+    await processFile(card, pres);
   }
 
   // Expect imported slide master (#2) to have swapped (left top) background image
