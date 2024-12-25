@@ -10,12 +10,6 @@ import CopySlidesButton from './elements/CopySlides';
 import CardListVisual from './elements/CardListVisual';
 
 function Hello() {
-  const [yamlData, setYamlData] = useState<YAMLData | null>(null);
-
-  const handleFileSelect = (data: YAMLData) => {
-    setYamlData(data);
-  };
-
   return (
     <div>
       <header className="header">
