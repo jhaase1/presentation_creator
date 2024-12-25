@@ -138,6 +138,16 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    const settingsDir = path.join(
+      app.getPath('home'),
+      '.stmarypresentationcreator',
+    );
+    if (!fs.existsSync(settingsDir)) {
+      fs.mkdirSync(settingsDir);
+    }
+
+    ipcMain.handle('get-settings-dir', () => settingsDir);
+
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

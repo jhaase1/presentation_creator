@@ -8,6 +8,8 @@ interface iStateManager {
   cards: Card[];
 }
 
+const settingsDir = window.electron.ipcRenderer.getSettingsDir();
+
 class StateManager {
   private static instance: StateManager;
 
@@ -18,6 +20,8 @@ class StateManager {
   private outputFile: string | null = null;
 
   private cards: Card[] = [];
+
+  private templateFilePath = `${settingsDir}/templateFile.yaml`;
 
   private listeners: Set<() => void> = new Set();
 
