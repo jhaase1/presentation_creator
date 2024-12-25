@@ -46,6 +46,11 @@ const electronHandler = {
 
       return result;
     },
+    readTextFile: async (filePath: string) => {
+      const result = await ipcRenderer.invoke('read-text-file', filePath);
+
+      return result;
+    },
   },
 };
 

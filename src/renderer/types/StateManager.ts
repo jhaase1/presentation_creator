@@ -1,6 +1,13 @@
 import jsyaml from 'js-yaml';
 import Card, { cardYAMLType } from './Card';
 
+interface iStateManager {
+  templateFile: string | null;
+  sidebarFile: string | null;
+  outputFile: string | null;
+  cards: Card[];
+}
+
 class StateManager {
   private static instance: StateManager;
 
@@ -92,8 +99,53 @@ class StateManager {
     this.notifyListeners();
   };
 
+  spliceCards = (
+    start: number | null = null,
+    deleteCount: number = 0,
+    ...userCards: Card[]
+  ) => {
+    const cards: Card[] = userCards.flat();
+
+    if (start === null) {
+      this.cards.push(...cards);
+    } else {
+      this.cards.splice(start, deleteCount, ...cards);
+    }
+
+    this.notifyListeners();
+  };
+
   getCards = (): Card[] => {
     return this.cards;
+  };
+
+  safeUpdateState = (
+    state: Partial<iStateManager>,
+    cardStartIndex: number | null = null,
+    cardDeleteCount: number = 0,
+  ) => {
+    const {
+      templateFile = null,
+      sidebarFile = null,
+      outputFile = null,
+      cards = null,
+    } = state;
+
+    if (this.templateFile === null) {
+      this.templateFile = templateFile;
+    }
+
+    if (this.sidebarFile === null) {
+      this.sidebarFile = sidebarFile;
+    }
+
+    if (this.outputFile === null) {
+      this.outputFile = outputFile;
+    }
+
+    if (cards !== null) {
+      this.spliceCards(cardStartIndex, cardDeleteCount, ...cards);
+    }
   };
 }
 

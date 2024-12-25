@@ -1,6 +1,6 @@
 /* eslint-disable react/function-component-definition */
 import React, { useEffect, useState } from 'react';
-import readYAMLFile from './readYAMLFile';
+import { readYAMLFile } from '../utilities/yamlFunctions';
 import StateManager from '../types/StateManager';
 
 export interface YAMLData {
@@ -33,8 +33,8 @@ const YAMLFileSelector: React.FC = () => {
 
     if (selectedFile) {
       try {
-        const data = await readYAMLFile(selectedFile);
-        setYamlData(data);
+        const data = await readYAMLFile(selectedFile.path);
+        stateManager.safeUpdateState(data);
       } catch (error: any) {
         console.error(error.message);
       }
@@ -54,8 +54,8 @@ const YAMLFileSelector: React.FC = () => {
 
     if (selectedFile) {
       try {
-        const data = await readYAMLFile(selectedFile);
-        setYamlData(data);
+        const data = await readYAMLFile(selectedFile.path);
+        stateManager.safeUpdateState(data);
       } catch (error: any) {
         console.error(error.message);
       }

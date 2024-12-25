@@ -176,3 +176,19 @@ ipcMain.handle('write-text-file', async (event, filePath, contents) => {
 
   return { status: 'success' };
 });
+
+ipcMain.handle('read-text-file', async (event, filePath) => {
+  try {
+    const contents = fs.readFileSync(filePath, 'utf8');
+    return contents;
+  } catch (error) {
+    if (typeof error === 'string') {
+      return { status: 'error', message: error };
+    }
+    if (error instanceof Error) {
+      return { status: 'error', message: error.message };
+    }
+  }
+
+  return { status: null };
+});

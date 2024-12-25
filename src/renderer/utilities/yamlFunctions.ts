@@ -26,3 +26,12 @@ export async function writeTextFile(
 ): Promise<void> {
   await window.electron.ipcRenderer.writeTextFile(filePath, data);
 }
+
+export async function readTextFile(filePath: string): Promise<string> {
+  return window.electron.ipcRenderer.readTextFile(filePath);
+}
+
+export async function readYAMLFile(filePath: string): Promise<any> {
+  const data = await readTextFile(filePath);
+  return load(data);
+}

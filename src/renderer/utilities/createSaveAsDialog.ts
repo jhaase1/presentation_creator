@@ -17,4 +17,4 @@ async function showSaveDialog(defaultPath: string, templateFile: FileFilter[]) {
   }
 }
 
-export { showSaveDialog, FileFilter };
+export { showSaveDialog };
