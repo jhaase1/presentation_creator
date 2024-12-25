@@ -2,7 +2,6 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { FileFilter } from '../renderer/utilities/createSaveAsDialog';
-import StateManager from '../renderer/types/StateManager';
 
 export type Channels = 'ipc-example';
 
@@ -22,6 +21,10 @@ const electronHandler = {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    getSettingsDir: () => {
+      const result = ipcRenderer.invoke('get-settings-dir');
+      return result;
     },
     mergePresentations: async (yamlState: string) => {
       const result = await ipcRenderer.invoke('merge-presentations', yamlState);
