@@ -70,11 +70,12 @@ class Card {
 export const cardYAMLType = new jsyaml.Type('!Card', {
   kind: 'mapping',
   instanceOf: Card,
-  construct: (data) => ({
-    file: data.file,
-    useSidebar: data.useSidebar,
-    blankSlide: data.blankSlide,
-  }),
+  construct: (data) =>
+    Object.assign(new Card(), {
+      file: data.file,
+      useSidebar: data.useSidebar,
+      blankSlide: data.blankSlide,
+    }),
   represent: (card: any) => ({
     file: card.file,
     useSidebar: card.useSidebar,
