@@ -2,7 +2,6 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { FileFilter } from '../renderer/utilities/createSaveAsDialog';
-import StateManager from '../renderer/types/StateManager';
 
 export type Channels = 'ipc-example';
 
