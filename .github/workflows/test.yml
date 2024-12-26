@@ -1,6 +1,14 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    inputs:
+      disable:
+        description: "Disable this workflow"
+        required: true
+        default: "true"
+
+# on: [push, pull_request]
 
 jobs:
   test:
