@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
-import YAMLFileSelector, { YAMLData } from './elements/YAMLFileSelector';
+import YAMLFileSelector from './elements/YAMLFileSelector';
 import SidebarFileSelector from './elements/SidebarFileSelector';
 import TemplateFileSelector from './elements/TemplateFileSelector';
 import OutputFileSelector from './elements/OutputFileSelector';
