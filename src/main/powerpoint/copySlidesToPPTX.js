@@ -14,18 +14,24 @@ import { load } from '../../renderer/utilities/yamlFunctions';
 
 const MasterLayoutMapping = {
   SideBar: {
-    'Title Only': 11,
-    'Title and Content': 12,
-    'Section Header': 13,
-    Blank: 14,
-    'Content Only': 15,
+    Blank: 17,
+    'Content Only': 18,
+    'Title Only': 19,
+    'Title and Content': 20,
+    'Title Slide': 21,
+    Comparison: 22,
+    'Two Content': 23,
+    'Section Header': 24,
   },
   NoSideBar: {
-    'Title Only': 8,
-    'Title and Content': 7,
-    'Section Header': 6,
-    Blank: 10,
-    'Content Only': 9,
+    'Title Slide': 9,
+    'Title and Content': 10,
+    'Content Only': 11,
+    'Section Header': 12,
+    'Two Content': 13,
+    Comparison: 14,
+    'Title Only': 15,
+    Blank: 16,
   },
 };
 
@@ -98,8 +104,6 @@ async function getLayoutName(archive, number) {
 }
 
 async function adjustSlideElements(card, slide, templateDimensions) {
-
-
   // Get all elements in the slide
   // Don't forget to use 'await'
   const elements = await slide.getAllElements();
