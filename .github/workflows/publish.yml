@@ -1,17 +1,9 @@
 name: Publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      disable:
-        description: "Disable this workflow"
-        required: true
-        default: "true"
-
-# on:
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
 
 jobs:
   publish:
@@ -40,6 +32,7 @@ jobs:
           npm install
           npm run postinstall
           npm run build
+          npm run package
 
       - name: Publish releases
         env:
