@@ -32,6 +32,8 @@ jobs:
           npm install
           npm run postinstall
           npm run build
+          pwd
+          ls -la
           npm run package
 
       - name: Publish releases
