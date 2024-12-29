@@ -29,11 +29,11 @@ jobs:
 
       - name: Install and build
         run: |
+          pwd
+          ls -la
           npm install
           npm run postinstall
           npm run build
-          pwd
-          ls -la
           npm run package
 
       - name: Publish releases
