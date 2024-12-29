@@ -31,6 +31,8 @@ jobs:
         run: |
           pwd
           ls -la
+          ls -la src
+          ls -la src/main
           npm install
           npm run postinstall
           npm run build
