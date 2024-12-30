@@ -1,0 +1,13 @@
+directories:
+  output: dist
+  buildResources: build
+productName: StMarysPresentationCreator
+appId: org.erb.ElectronReact
+asar: true
+asarUnpack: '**\*.{node,dll}'
+files:
+  - filter:
+      - dist
+      - node_modules
+      - package.json
+electronVersion: 26.6.10

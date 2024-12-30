@@ -29,10 +29,6 @@ jobs:
 
       - name: Install and build
         run: |
-          pwd
-          ls -la
-          ls -la src
-          ls -la src/main
           npm install
           npm run postinstall
           npm run build
@@ -48,4 +44,6 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          pwd
+          ls -la
           npm exec electron-builder -- --publish always --win --mac --linux
