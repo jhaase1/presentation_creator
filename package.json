@@ -169,8 +169,6 @@
   "build": {
     "productName": "StMarysPresentationCreator",
     "appId": "org.erb.ElectronReact",
-    "asar": true,
-    "asarUnpack": "**\\*.{node,dll}",
     "files": [
       "dist",
       "node_modules",
