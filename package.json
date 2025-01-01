@@ -178,22 +178,6 @@
       "node_modules",
       "package.json"
     ],
-    "mac": {
-      "sign": ".erb/scripts/notarize.js",
-      "notarize": false,
-      "target": {
-        "target": "default",
-        "arch": [
-          "arm64",
-          "x64"
-        ]
-      },
-      "type": "distribution",
-      "hardenedRuntime": true,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist",
-      "gatekeeperAssess": false
-    },
     "dmg": {
       "contents": [
         {
@@ -213,11 +197,18 @@
         "nsis"
       ]
     },
+    "mac": {
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "gatekeeperAssess": false
+    },
     "linux": {
       "target": [
         "AppImage"
       ],
-      "category": "Development"
+      "category": "AudioVideo"
     },
     "directories": {
       "app": "release/app",
