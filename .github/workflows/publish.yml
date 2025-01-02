@@ -11,7 +11,7 @@ jobs:
     # config in package.json > "build" and remove the conditional below
     # if: ${{ github.repository_owner == 'electron-react-boilerplate' }}
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     # strategy:
     #   matrix:
