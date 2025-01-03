@@ -11,11 +11,11 @@ jobs:
     # config in package.json > "build" and remove the conditional below
     # if: ${{ github.repository_owner == 'electron-react-boilerplate' }}
 
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
 
-    # strategy:
-    #   matrix:
-    #     os: [ ubuntu-latest ] # , windows-latest, macos-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
       - name: Checkout git repo
@@ -33,6 +33,15 @@ jobs:
           npm run postinstall
           npm run build
 
+      - name: Set platform variable
+        id: set-platform
+        run: |
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            echo "platform=mac" >> $GITHUB_ENV
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "platform=win" >> $GITHUB_ENV
+          else
+            echo "platform=linux" >> $GITHUB_ENV
       - name: Publish releases
         env:
           # The APPLE_* values are used for auto updates signing
@@ -44,4 +53,4 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm exec electron-builder --win --mac --linux --portable -- --publish always
+          npm exec electron-builder --${{ env.platform }} --portable -- --publish always
