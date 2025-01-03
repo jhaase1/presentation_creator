@@ -29,6 +29,10 @@ jobs:
 
       - name: Install and build
         run: |
+          echo "${{ matrix.os }}"
+          echo "${{ matrix.os == 'windows-latest' }}"
+          echo "${{ matrix.os == 'windows-latest' }}"
+          echo "${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}"
           npm install
           npm run postinstall
           npm run build
