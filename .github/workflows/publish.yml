@@ -37,19 +37,19 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "platform=mac" >> $GITHUB_ENV
+          echo "plaform=$(echo mac)" >> $GITHUB_ENV
 
       - name: Set platform to win
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "platform=win" >> $GITHUB_ENV
+          echo "plaform=$(echo win)" >> $GITHUB_ENV
 
       - name: Set platform to linux
         if: ${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "platform=linux" >> $GITHUB_ENV
+          echo "plaform=$(echo linux)" >> $GITHUB_ENV
 
       - name: Publish releases
         env:
