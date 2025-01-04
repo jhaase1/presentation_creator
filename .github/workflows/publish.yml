@@ -49,7 +49,7 @@ jobs:
           echo "${{ matrix.os }} running"
 
           if [ ${{ matrix.os }} == 'macos-latest' ]; then
-            npm exec electron-builder --mac --portable --universal -- --publish always
+            npm exec electron-builder --mac --portable --universal --ia32 --x64 -- --publish always
           elif [ ${{ matrix.os }} == 'windows-latest' ]; then
             npm exec electron-builder --win --portable -- --publish always
           else
