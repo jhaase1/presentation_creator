@@ -33,25 +33,8 @@ jobs:
           npm run postinstall
           npm run build
 
-      - name: Set platform to mac
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          echo "${{ matrix.os }} running"
-          echo "platform=$(echo mac)" >> $GITHUB_ENV
-
-      - name: Set platform to win
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          echo "${{ matrix.os }} running"
-          echo "platform=$(echo win)" >> $GITHUB_ENV
-
-      - name: Set platform to linux
-        if: ${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}
-        run: |
-          echo "${{ matrix.os }} running"
-          echo "platform=$(echo linux)" >> $GITHUB_ENV
-
       - name: Publish releases
+        shell: bash
         env:
           # The APPLE_* values are used for auto updates signing
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASS }}
@@ -61,6 +44,15 @@ jobs:
           # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
         run: |
-          echo "${{ env.platform }}"
+          if [ ${{ matrix.os }} == 'macos-latest' ]; then
+            export platform=mac
+          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
+            export platform=win
+          else
+            export platform=linux
+          fi
+
+          echo "${{ matrix.os }} running, ${{ env.platform }}"
           npm exec electron-builder --${{ env.platform }} --portable -- --publish always
