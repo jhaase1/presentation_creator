@@ -37,19 +37,19 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "plaform=$(echo mac)" >> $GITHUB_ENV
+          echo "platform=$(echo mac)" >> $GITHUB_ENV
 
       - name: Set platform to win
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "plaform=$(echo win)" >> $GITHUB_ENV
+          echo "platform=$(echo win)" >> $GITHUB_ENV
 
       - name: Set platform to linux
         if: ${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}
         run: |
           echo "${{ matrix.os }} running"
-          echo "plaform=$(echo linux)" >> $GITHUB_ENV
+          echo "platform=$(echo linux)" >> $GITHUB_ENV
 
       - name: Publish releases
         env:
@@ -62,4 +62,5 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm exec electron-builder --$platform --portable -- --publish always
+          echo "${{ env.platform }}"
+          npm exec electron-builder --${{ env.platform }} --portable -- --publish always
