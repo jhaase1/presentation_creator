@@ -54,5 +54,5 @@ jobs:
             export platform=linux
           fi
 
-          echo "${{ matrix.os }} running, ${{ env.platform }}"
-          npm exec electron-builder --${{ env.platform }} --portable -- --publish always
+          echo "${{ matrix.os }} running, ${{ platform }}"
+          npm exec electron-builder --${{ platform }} --portable -- --publish always
