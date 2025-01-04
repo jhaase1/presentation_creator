@@ -46,13 +46,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
         run: |
-          if [ ${{ matrix.os }} == 'macos-latest' ]; then
-            export platform=mac
-          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
-            export platform=win
-          else
-            export platform=linux
-          fi
+          echo "${{ matrix.os }} running"
 
-          echo "${{ matrix.os }} running, ${{ platform }}"
-          npm exec electron-builder --${{ platform }} --portable -- --publish always
+          if [ ${{ matrix.os }} == 'macos-latest' ]; then
+            npm exec electron-builder --mac --portable -- --publish always
+          elif [ ${{ matrix.os }} == 'windows-latest' ]; then
+            npm exec electron-builder --win --portable -- --publish always
+          else
+            npm exec electron-builder --linux --portable -- --publish always
+          fi
