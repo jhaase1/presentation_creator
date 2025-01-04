@@ -29,25 +29,27 @@ jobs:
 
       - name: Install and build
         run: |
-          echo "${{ matrix.os }}"
-          echo "${{ matrix.os == 'windows-latest' }}"
-          echo "${{ matrix.os == 'windows-latest' }}"
-          echo "${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}"
           npm install
           npm run postinstall
           npm run build
 
       - name: Set platform to mac
         if: ${{ matrix.os == 'macos-latest' }}
-        run: echo "platform=mac" >> $GITHUB_ENV
+        run: |
+          echo "${{ matrix.os }} running"
+          echo "platform=mac" >> $GITHUB_ENV
 
       - name: Set platform to win
         if: ${{ matrix.os == 'windows-latest' }}
-        run: echo "platform=win" >> $GITHUB_ENV
+        run: |
+          echo "${{ matrix.os }} running"
+          echo "platform=win" >> $GITHUB_ENV
 
       - name: Set platform to linux
         if: ${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}
-        run: echo "platform=linux" >> $GITHUB_ENV
+        run: |
+          echo "${{ matrix.os }} running"
+          echo "platform=linux" >> $GITHUB_ENV
 
       - name: Publish releases
         env:
@@ -60,4 +62,4 @@ jobs:
           # This is used for uploading release assets to github
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          npm exec electron-builder --${{ env.platform }} --portable -- --publish always
+          npm exec electron-builder --$platform --portable -- --publish always
