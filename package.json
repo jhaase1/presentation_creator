@@ -201,9 +201,10 @@
     "mac": {
       "target": [
         {
-          "target": "mas",
+          "target": "dmg",
           "arch": [
-            "universal"
+            "ia32",
+            "x64"
           ]
         }
       ],
