@@ -50,6 +50,14 @@ const electronHandler = {
 
       return result;
     },
+    getAppSettings: async () => {
+      const result = await ipcRenderer.invoke('get-app-settings');
+      return result;
+    },
+    setAppSettings: async (settings: object) => {
+      const result = await ipcRenderer.invoke('set-app-settings', settings);
+      return result;
+    },
   },
 };
 

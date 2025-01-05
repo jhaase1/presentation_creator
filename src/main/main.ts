@@ -17,6 +17,9 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import addSlidesToPresentation from './powerpoint/copySlidesToPPTX';
 
+const userDataPath = app.getPath('userData');
+const appSettingsPath = path.join(userDataPath, 'AppSettings.json');
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -191,4 +194,44 @@ ipcMain.handle('read-text-file', async (event, filePath) => {
   }
 
   return { status: null };
+});
+
+ipcMain.handle('get-app-settings', async () => {
+  try {
+    const data = fs.readFileSync(appSettingsPath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error reading settings:', error.message);
+      return { status: 'error', message: error.message };
+    }
+    return { status: 'error', message: 'Unknown error' };
+  }
+});
+
+ipcMain.handle('set-app-settings', async (event, newSettings) => {
+  try {
+    let currentSettings = {};
+
+    // Check if the settings file exists
+    if (fs.existsSync(appSettingsPath)) {
+      // Read current settings
+      const currentSettingsData = fs.readFileSync(appSettingsPath, 'utf8');
+      currentSettings = JSON.parse(currentSettingsData);
+    }
+
+    // Merge current settings with new settings
+    const updatedSettings = { ...currentSettings, ...newSettings };
+
+    // Write updated settings back to file
+    const data = JSON.stringify(updatedSettings, null, 2);
+    fs.writeFileSync(appSettingsPath, data, 'utf8');
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error writing settings:', error.message);
+      return { status: 'error', message: error.message };
+    }
+    return { status: 'error', message: 'Unknown error' };
+  }
 });

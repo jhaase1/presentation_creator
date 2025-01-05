@@ -1,3 +1,4 @@
+import { ipcRenderer } from 'electron';
 import jsyaml from 'js-yaml';
 import Card, { cardYAMLType } from './Card';
 
@@ -21,13 +22,22 @@ class StateManager {
 
   private listeners: Set<() => void> = new Set();
 
-  private constructor() {}
+  private constructor() {
+    this.initializeFromSettings();
+  }
 
   static getInstance(): StateManager {
     if (!StateManager.instance) {
       StateManager.instance = new StateManager();
     }
     return StateManager.instance;
+  }
+
+  private async initializeFromSettings(): Promise<void> {
+    const appSettings = await window.electron.ipcRenderer.getAppSettings();
+    if (appSettings && appSettings.templateFile) {
+      this.templateFile = appSettings.templateFile;
+    }
   }
 
   // Listener functionality
@@ -50,6 +60,20 @@ class StateManager {
   setTemplateFile(file: string): void {
     this.templateFile = file;
     this.notifyListeners();
+
+    // Update app settings
+    (async () => {
+      try {
+        const response = await window.electron.ipcRenderer.setAppSettings({
+          templateFile: file,
+        });
+        if (response.status !== 'success') {
+          console.error('Failed to update app settings:', response.message);
+        }
+      } catch (error) {
+        console.error('Error invoking set-app-settings:', error);
+      }
+    })();
   }
 
   getSidebarFile(): string | null {
