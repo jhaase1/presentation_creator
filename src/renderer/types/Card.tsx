@@ -14,7 +14,7 @@ class Card {
 
   constructor(
     file: string | null = null,
-    useSidebar: boolean = false,
+    useSidebar: boolean = true,
     blankSlide: boolean = true,
   ) {
     this.id = uuidv4();
