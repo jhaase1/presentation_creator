@@ -86,6 +86,10 @@ class StateManager {
     this.notifyListeners();
   };
 
+  findCard(id: string): number {
+    return this.cards.findIndex((card) => card.id === id);
+  }
+
   deleteCard = (id: string) => {
     this.cards = this.cards.filter((card) => card.getID() !== id);
     this.notifyListeners();
