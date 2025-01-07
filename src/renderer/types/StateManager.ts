@@ -190,7 +190,7 @@ export const StateManagerYAMLType = new jsyaml.Type('!StateManager', {
     templateFile: state.getTemplateFile(),
     sidebarFile: state.getSidebarFile(),
     outputFile: state.getOutputFile(),
-    cards: state.getCards(),
+    cards: state.getCards().filter((card: Card) => card.getFile() !== null),
   }),
 });
 
