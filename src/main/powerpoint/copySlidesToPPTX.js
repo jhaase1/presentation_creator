@@ -35,6 +35,26 @@ const MasterLayoutMapping = {
   },
 };
 
+function getImagePathDetails(imagePath) {
+  const imageDir = path.dirname(imagePath);
+  const imageFile = path.basename(imagePath);
+  return { imageDir, imageFile };
+}
+
+function isImageFile(fileName) {
+  const imageExtensions = [
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.gif',
+    '.bmp',
+    '.tiff',
+    '.svg',
+  ];
+  const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
+  return imageExtensions.includes(fileExtension);
+}
+
 async function getSlideNumbers(pres, source) {
   const slideNumbers = await pres.getTemplate(source).getAllSlideNumbers();
   return slideNumbers;
@@ -212,7 +232,6 @@ async function adjustSlideElements(card, slide, templateDimensions) {
 }
 
 async function processFile(card, pres, templateDimensions) {
-  console.log(card);
   const inputFile = card.file;
 
   try {
@@ -242,8 +261,7 @@ async function addSlidesToPresentation(yamlState) {
 
   // const templateSize = await getTemplateSize(templateFile);
 
-  const imageDir = path.dirname(sidebarFile);
-  const imageFile = path.basename(sidebarFile);
+  const { imageDir, imageFile } = getImagePathDetails(sidebarFile);
 
   const automizer = new Automizer({
     removeExistingSlides: true,
