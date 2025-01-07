@@ -1,6 +1,6 @@
 {
   "name": "presentation-creator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Electron app to merge presentations together",
   "license": "MIT",
   "author": {
