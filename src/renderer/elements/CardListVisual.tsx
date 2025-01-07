@@ -73,7 +73,17 @@ class CardListVisual extends Component<{}, CardListVisualState> {
       <div>
         {this.renderCards()}
         <button type="button" onClick={() => this.stateManager.addCard()}>
-          Add Additional Element
+          Add Card
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            for (let i = 0; i < 10; i += 1) {
+              this.stateManager.addCard();
+            }
+          }}
+        >
+          Add 10 Cards
         </button>
       </div>
     );
