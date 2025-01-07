@@ -72,19 +72,26 @@ class CardListVisual extends Component<{}, CardListVisualState> {
     return (
       <div>
         {this.renderCards()}
-        <button type="button" onClick={() => this.stateManager.addCard()}>
-          Add Card
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            for (let i = 0; i < 10; i += 1) {
-              this.stateManager.addCard();
-            }
-          }}
-        >
-          Add 10 Cards
-        </button>
+        <div style={{ display: 'flex', gap: '10px', padding: '10px' }}>
+          <button
+            type="button"
+            onClick={() => this.stateManager.addCard()}
+            style={{ flex: 1 }}
+          >
+            Add Card
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              for (let i = 0; i < 10; i += 1) {
+                this.stateManager.addCard();
+              }
+            }}
+            style={{ flex: 1 }}
+          >
+            Add 10 Cards
+          </button>
+        </div>
       </div>
     );
   }
