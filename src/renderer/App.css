@@ -13,7 +13,7 @@ body {
     #7a2c9e 129.35%
   );
   font-family: sans-serif;
-  overflow-y: auto;
+  overflow: hidden; /* Change this line */
   margin: 0;
   padding: 0;
   display: flex;
