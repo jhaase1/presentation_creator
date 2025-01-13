@@ -45,10 +45,11 @@ class StateManager {
   }
 
   private async callDirnameForSetBackupFolder(file: string): Promise<void> {
-    const dirname = await window.electron.ipcRenderer.callPathDirname(file);
+    const result = await window.electron.ipcRenderer.pathParse(file);
+    const backupFolder = result.status === 'success' ? result.value : null;
 
-    if (dirname.status === 'success') {
-      this.setBackupFolder(dirname.value);
+    if (backupFolder !== null) {
+      this.setBackupFolder(backupFolder.dir);
     }
   }
 
