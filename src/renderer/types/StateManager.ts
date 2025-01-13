@@ -204,16 +204,16 @@ class StateManager {
       cards = null,
     } = state;
 
-    if (this.templateFile === null) {
-      this.templateFile = templateFile;
+    if (this.templateFile === null && templateFile !== null) {
+      this.setTemplateFile(templateFile);
     }
 
-    if (this.sidebarFile === null) {
-      this.sidebarFile = sidebarFile;
+    if (this.sidebarFile === null && sidebarFile !== null) {
+      this.setSidebarFile(sidebarFile);
     }
 
-    if (this.outputFile === null) {
-      this.outputFile = outputFile;
+    if (this.outputFile === null && outputFile !== null) {
+      this.setOutputFile(outputFile);
     }
 
     if (cards !== null) {
