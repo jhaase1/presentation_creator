@@ -71,7 +71,7 @@ const YAMLFileSelector: React.FC = () => {
         style={{
           border: '2px dashed #ccc',
           padding: '20px',
-          margin: '20px 0',
+          margin: '5px 0',
         }}
       >
         <p>Drag and drop a YAML file here or click to select</p>

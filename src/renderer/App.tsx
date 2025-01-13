@@ -7,6 +7,7 @@ import TemplateFileSelector from './elements/TemplateFileSelector';
 import OutputFileSelector from './elements/OutputFileSelector';
 import CopySlidesButton from './elements/CopySlides';
 import CardListVisual from './elements/CardListVisual';
+import BackupFolderSelector from './elements/BackupFolderSelector';
 
 function Hello() {
   return (
@@ -33,6 +34,9 @@ function Hello() {
 
           {/* Output Selector Component */}
           <OutputFileSelector />
+
+          {/* Backup Folder Selector Component */}
+          <BackupFolderSelector />
 
           {/* Copy Slides Button */}
           <CopySlidesButton />

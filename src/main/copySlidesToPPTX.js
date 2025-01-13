@@ -10,7 +10,7 @@ import { XmlRelationshipHelper } from 'pptx-automizer/dist/helper/xml-relationsh
 import { XmlHelper } from 'pptx-automizer/dist/helper/xml-helper';
 import { XmlSlideHelper } from 'pptx-automizer/dist/helper/xml-slide-helper';
 
-import { load } from '../../renderer/utilities/yamlFunctions';
+import { load } from '../renderer/utilities/yamlFunctions';
 
 const MasterLayoutMapping = {
   SideBar: {

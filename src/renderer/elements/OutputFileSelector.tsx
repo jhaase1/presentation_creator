@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
-import { showSaveDialog, FileFilter } from '../utilities/createSaveAsDialog';
+import { showSaveDialog, FileFilter } from '../utilities/createDialogs';
 
 class OutputFileSelector extends Component {
   constructor(props: any) {
@@ -66,8 +66,8 @@ class OutputFileSelector extends Component {
       <div
         style={{
           border: '2px dashed #ccc',
-          padding: '20px',
-          margin: '20px 0',
+          padding: '5px',
+          margin: '5px 0',
           textAlign: 'center',
         }}
       >

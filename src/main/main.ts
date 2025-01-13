@@ -15,7 +15,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import addSlidesToPresentation from './powerpoint/copySlidesToPPTX';
+import addSlidesToPresentation from './copySlidesToPPTX';
 
 const userDataPath = app.getPath('userData');
 const appSettingsPath = path.join(userDataPath, 'AppSettings.json');
@@ -42,6 +42,11 @@ ipcMain.handle('show-save-dialog', async (event, defaultPath, filters) => {
     defaultPath,
     filters,
   });
+  return result;
+});
+
+ipcMain.handle('show-open-dialog', async (event, options) => {
+  const result = dialog.showOpenDialogSync(options);
   return result;
 });
 
@@ -232,6 +237,24 @@ ipcMain.handle('set-app-settings', async (event, newSettings) => {
       console.error('Error writing settings:', error.message);
       return { status: 'error', message: error.message };
     }
+    return { status: 'error', message: 'Unknown error' };
+  }
+});
+
+ipcMain.handle('path-parse', async (event, p: string) => {
+  try {
+    const pathObject = path.parse(p);
+    return { status: 'success', value: pathObject };
+  } catch (error) {
+    return { status: 'error', message: 'Unknown error' };
+  }
+});
+
+ipcMain.handle('path-format', async (event, pathObject: object) => {
+  try {
+    const p = path.format(pathObject);
+    return { status: 'success', value: p };
+  } catch (error) {
     return { status: 'error', message: 'Unknown error' };
   }
 });

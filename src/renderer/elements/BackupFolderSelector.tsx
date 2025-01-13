@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
+import { showOpenDialog } from '../utilities/createDialogs';
 
-class SidebarFileSelector extends Component {
+class BackupFolderSelector extends Component {
   constructor(props: any) {
     super(props);
     this.state = {
-      sidebarFile: '', // Store file name as a string (empty string for no file)
+      backupFolder: '', // Store file name as a string (empty string for no file)
     };
   }
 
@@ -15,7 +16,7 @@ class SidebarFileSelector extends Component {
     fileManager.onFileChange(this.updateFile);
 
     // Initialize the state with the file manager's current file string
-    this.setState({ sidebarFile: fileManager.getSidebarFile() });
+    this.setState({ backupFolder: fileManager.getBackupFolder() });
   }
 
   componentWillUnmount() {
@@ -28,7 +29,7 @@ class SidebarFileSelector extends Component {
 
     if (file && file.type.startsWith('image/')) {
       const fileName = file.path; // Get the file name (string)
-      StateManager.getInstance().setSidebarFile(fileName); // Pass the string to StateManager
+      StateManager.getInstance().setBackupFolder(fileName); // Pass the string to StateManager
     }
   };
 
@@ -41,25 +42,32 @@ class SidebarFileSelector extends Component {
     const file = event.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
       const fileName = file.path; // Get the file name (string)
-      StateManager.getInstance().setSidebarFile(fileName); // Pass the string to StateManager
+      StateManager.getInstance().setBackupFolder(fileName); // Pass the string to StateManager
+    }
+  };
+
+  handleOpen = async () => {
+    const options = {
+      properties: ['openDirectory'],
+    };
+    const result = await showOpenDialog(options);
+    if (result) {
+      this.setState({ backupFolder: result });
+      StateManager.getInstance().setBackupFolder(result);
     }
   };
 
   updateFile() {
     const fileManager = StateManager.getInstance();
-    const sidebarFile = fileManager.getSidebarFile();
-    this.setState({ sidebarFile: sidebarFile });
-
-    document.getElementById("sidebar-input").value = "";
+    const backupFolder = fileManager.getBackupFolder();
+    this.setState({ backupFolder: backupFolder });
   }
 
   render() {
-    const { sidebarFile } = this.state;
+    const { backupFolder } = this.state;
 
     return (
       <div
-        onDragOver={this.handleDragOver}
-        onDrop={this.handleDrop}
         style={{
           border: '2px dashed #ccc',
           padding: '5px',
@@ -67,14 +75,7 @@ class SidebarFileSelector extends Component {
           textAlign: 'center',
         }}
       >
-        <p>Sidebar image</p>
-        <input
-          type="file"
-          accept="image/*"
-          id="sidebar-input"
-          style={{ display: 'none' }}
-          onChange={this.handleFileChange}
-        />
+        <p>Backup Folder</p>
         <div
           style={{
             border: '2px solid #428bca',
@@ -84,11 +85,11 @@ class SidebarFileSelector extends Component {
             margin: '10px',
             textAlign: 'left',
           }}
-          onClick={() => document.getElementById('sidebar-input')?.click()}
+          onClick={this.handleOpen}
         >
-          {sidebarFile || (
+          {backupFolder || (
             <span style={{ color: '#999' }}>
-              Drag and drop an image file here, or click to select
+              Drag and drop a backup folder, or click to select
             </span>
           )}
         </div>
@@ -97,4 +98,4 @@ class SidebarFileSelector extends Component {
   }
 }
 
-export default SidebarFileSelector;
+export default BackupFolderSelector;

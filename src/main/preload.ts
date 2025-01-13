@@ -1,7 +1,8 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { FileFilter } from '../renderer/utilities/createSaveAsDialog';
+import { FileFilter } from '../renderer/utilities/createDialogs';
+import path from 'node:path';
 
 export type Channels = 'ipc-example';
 
@@ -36,6 +37,11 @@ const electronHandler = {
 
       return result;
     },
+    showOpenDialog: async (options: object) => {
+      const result = await ipcRenderer.invoke('show-open-dialog', options);
+
+      return result;
+    },
     writeTextFile: async (filePath: string, contents: string) => {
       const result = await ipcRenderer.invoke(
         'write-text-file',
@@ -56,6 +62,14 @@ const electronHandler = {
     },
     setAppSettings: async (settings: object) => {
       const result = await ipcRenderer.invoke('set-app-settings', settings);
+      return result;
+    },
+    pathParse: async (p: string) => {
+      const result = await ipcRenderer.invoke('path-parse', p);
+      return result;
+    },
+    pathFormat: async (pathObject: object) => {
+      const result = await ipcRenderer.invoke('path-format', pathObject);
       return result;
     },
   },

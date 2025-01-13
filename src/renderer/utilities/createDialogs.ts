@@ -17,4 +17,15 @@ async function showSaveDialog(defaultPath: string, templateFile: FileFilter[]) {
   }
 }
 
-export { showSaveDialog };
+async function showOpenDialog(options: object) {
+  try {
+    const result = await window.electron.ipcRenderer.showOpenDialog(options);
+
+    return result;
+  } catch (error) {
+    console.error('IPC invocation error:', error);
+    return null;
+  }
+}
+
+export { showOpenDialog, showSaveDialog };

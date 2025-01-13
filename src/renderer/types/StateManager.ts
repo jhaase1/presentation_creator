@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron';
 import jsyaml from 'js-yaml';
 import Card, { cardYAMLType } from './Card';
 
@@ -17,6 +16,8 @@ class StateManager {
   private sidebarFile: string | null = null;
 
   private outputFile: string | null = null;
+
+  private backupFolder: string | null = null;
 
   private cards: Card[] = [];
 
@@ -37,6 +38,17 @@ class StateManager {
     const appSettings = await window.electron.ipcRenderer.getAppSettings();
     if (appSettings && appSettings.templateFile) {
       this.templateFile = appSettings.templateFile;
+    }
+    if (appSettings && appSettings.backupFolder) {
+      this.backupFolder = appSettings.backupFolder;
+    }
+  }
+
+  private async callDirnameForSetBackupFolder(file: string): Promise<void> {
+    const dirname = await window.electron.ipcRenderer.callPathDirname(file);
+
+    if (dirname.status === 'success') {
+      this.setBackupFolder(dirname.value);
     }
   }
 
@@ -76,6 +88,29 @@ class StateManager {
     })();
   }
 
+  getBackupFolder(): string | null {
+    return this.backupFolder;
+  }
+
+  setBackupFolder(folder: string): void {
+    this.backupFolder = folder;
+    this.notifyListeners();
+
+    // Update app settings
+    (async () => {
+      try {
+        const response = await window.electron.ipcRenderer.setAppSettings({
+          backupFolder: folder,
+        });
+        if (response.status !== 'success') {
+          console.error('Failed to update app settings:', response.message);
+        }
+      } catch (error) {
+        console.error('Error invoking set-app-settings:', error);
+      }
+    })();
+  }
+
   getSidebarFile(): string | null {
     return this.sidebarFile;
   }
@@ -91,7 +126,16 @@ class StateManager {
 
   setOutputFile(file: string): void {
     this.outputFile = file;
-    this.notifyListeners();
+
+    if (this.backupFolder === null) {
+      // if backup folder is not set, set it to the folder of the output file
+      // for some unknowable reason, the designers of electron decided that even accessing path was a security risk
+      // this calls notifyListeners() internally, so we don't need to call it again
+      this.callDirnameForSetBackupFolder(file);
+    } else {
+      // otherwise, notify listeners
+      this.notifyListeners();
+    }
   }
 
   addCard = (options: Partial<Card> = {}) => {

@@ -70,8 +70,8 @@ class TemplateFileSelector extends Component {
         onDrop={this.handleDrop}
         style={{
           border: '2px dashed #ccc',
-          padding: '20px',
-          margin: '20px 0',
+          padding: '5px',
+          margin: '5px 0',
           textAlign: 'center',
         }}
       >

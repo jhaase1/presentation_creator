@@ -8,29 +8,43 @@ function CopySlidesButton() {
       const yamlState = dump(state);
 
       const outputFile = state.getOutputFile();
+      const backupFolder = state.getBackupFolder();
+
+      let result = null;
 
       if (outputFile === null) {
         console.error('Output file file not set');
         return;
       }
 
-      const yamlFile = outputFile.replace(/\.[^/.]+$/, '.yaml');
+      result = await window.electron.ipcRenderer.pathParse(outputFile);
+      const outputFileObject =
+        result.status === 'success' ? result.value : null;
 
-      writeTextFile(yamlFile, yamlState);
+      if (outputFileObject === null) {
+        console.error('Output file path not valid');
+        return;
+      }
 
-      // const fileNameList: string[] = state.getCards().flatMap((card) => {
-      //   if (card.file === null) {
-      //     return [];
-      //   }
-      //   return card.file;
-      // });
+      if (backupFolder === null) {
+        console.error('Backup folder not set');
+      } else {
+        result = await window.electron.ipcRenderer.pathFormat({
+          dir: backupFolder,
+          name: outputFileObject.name,
+          ext: '.yaml',
+        });
 
-      // const templateFile = state.getTemplateFile();
-      // const newImage = state.getSidebarFile();
-      // const outputFile = state.getOutputFile();
+        const yamlFilePath = result.status === 'success' ? result.value : null;
 
-      const result =
-        await window.electron.ipcRenderer.mergePresentations(yamlState);
+        if (yamlFilePath === null) {
+          console.error('Error formatting YAML file path');
+        } else {
+          result = writeTextFile(yamlFilePath, yamlState);
+        }
+      }
+
+      result = await window.electron.ipcRenderer.mergePresentations(yamlState);
 
       if (result.status === 'success') {
         console.log('Slides added successfully');

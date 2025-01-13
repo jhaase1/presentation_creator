@@ -24,7 +24,16 @@ export async function writeTextFile(
   filePath: string,
   data: string,
 ): Promise<void> {
-  await window.electron.ipcRenderer.writeTextFile(filePath, data);
+  const result = await window.electron.ipcRenderer.writeTextFile(
+    filePath,
+    data,
+  );
+
+  if (result.status === 'success') {
+    console.log('YAML file written successfully');
+  } else {
+    console.error('Error writing YAML file:', result.message);
+  }
 }
 
 export async function readTextFile(filePath: string): Promise<string> {
