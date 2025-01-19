@@ -1,10 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import jsyaml from 'js-yaml';
+import { pptx } from './FileTypes';
 
 class Card {
   readonly id: string;
 
   file: string | null;
+
+  fileType: string | null;
 
   useSidebar: boolean;
 
@@ -16,9 +19,16 @@ class Card {
     file: string | null = null,
     useSidebar: boolean = true,
     blankSlide: boolean = true,
+    fileType: string | null = null,
   ) {
     this.id = uuidv4();
     this.file = file;
+
+    if (file && !fileType) {
+      this.fileType = pptx;
+    } else {
+      this.fileType = fileType;
+    }
     this.useSidebar = useSidebar;
     this.blankSlide = blankSlide;
   }
@@ -45,8 +55,15 @@ class Card {
     this.notifyListeners();
   }
 
-  setFile(file: string | null): void {
+  setFile(file: string | null, fileType: string | null): void {
     this.file = file;
+
+    if (fileType) {
+      this.fileType = fileType;
+    } else {
+      this.fileType = pptx;
+    }
+
     this.notifyListeners();
   }
 
@@ -62,6 +79,10 @@ class Card {
     return this.file;
   }
 
+  getFileType(): string {
+    return this.fileType;
+  }
+
   getID(): string {
     return this.id;
   }
@@ -73,11 +94,13 @@ export const cardYAMLType = new jsyaml.Type('!Card', {
   construct: (data) =>
     Object.assign(new Card(), {
       file: data.file,
+      fileType: data.fileType || pptx,
       useSidebar: data.useSidebar,
       blankSlide: data.blankSlide,
     }),
   represent: (card: any) => ({
     file: card.file,
+    fileType: card.fileType,
     useSidebar: card.useSidebar,
     blankSlide: card.blankSlide,
   }),

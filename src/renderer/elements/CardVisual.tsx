@@ -65,10 +65,11 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
     const droppedFile = event.dataTransfer.files?.[0];
     if (
       droppedFile &&
-      droppedFile.type ===
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      (droppedFile.type ===
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
+        droppedFile.type.startsWith('image/'))
     ) {
-      card.setFile(droppedFile.path);
+      card.setFile(droppedFile.path, droppedFile.type);
     }
   };
 
@@ -105,7 +106,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
             style={{ display: 'none' }}
             onChange={(e) => {
               const newFile = e.target.files?.[0];
-              if (newFile) card.setFile(newFile.path);
+              if (newFile) card.setFile(newFile.path, newFile.type);
             }}
           />
         </label>
