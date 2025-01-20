@@ -10,7 +10,152 @@ import { XmlRelationshipHelper } from 'pptx-automizer/dist/helper/xml-relationsh
 import { XmlHelper } from 'pptx-automizer/dist/helper/xml-helper';
 import { XmlSlideHelper } from 'pptx-automizer/dist/helper/xml-slide-helper';
 
+import { types } from 'util';
 import { load } from '../renderer/utilities/yamlFunctions';
+import { pptx } from '../renderer/types/FileTypes';
+
+async function getMasterName(archive, number) {
+  const XML = await XmlHelper.getXmlFromArchive(
+    archive,
+    `ppt/theme/theme${number}.xml`,
+  );
+
+  const layout = XML.getElementsByTagName('a:theme')?.item(0);
+  if (layout) {
+    const name = layout.getAttribute('name');
+    return name;
+  }
+}
+
+async function getLayoutName(archive, number) {
+  const XML = await XmlHelper.getXmlFromArchive(
+    archive,
+    `ppt/slideLayouts/slideLayout${number}.xml`,
+  );
+
+  const layout = XML.getElementsByTagName('p:cSld')?.item(0);
+  if (layout) {
+    const name = layout.getAttribute('name');
+    return name;
+  }
+}
+
+async function getAllMasterNames(archive) {
+  const masterNames = [];
+  let number = 1;
+  let name;
+
+  while ((name = await getMasterName(archive, number)) !== null) {
+    masterNames.push(name);
+    number++;
+  }
+
+  return masterNames;
+}
+
+async function getAllLayoutNames(archive) {
+  const layoutNames = [];
+  let number = 1;
+  let name;
+
+  while ((name = await getLayoutName(archive, number)) !== null) {
+    layoutNames.push(name);
+    number++;
+  }
+
+  return layoutNames;
+}
+
+async function slide_getHierarchy(slide) {
+  // Get source slide layout id
+  const sourceLayoutId = await XmlRelationshipHelper.getSlideLayoutNumber(
+    slide.sourceTemplate.archive,
+    slide.sourceNumber,
+  );
+
+  // Get source master id
+  const sourceMasterId = await XmlRelationshipHelper.getSlideMasterNumber(
+    slide.sourceTemplate.archive,
+    sourceLayoutId,
+  );
+
+  const slideMasterName = await getMasterName(
+    slide.sourceTemplate.archive,
+    sourceMasterId,
+  );
+
+  const slideLayoutName = await getLayoutName(
+    slide.sourceTemplate.archive,
+    sourceLayoutId,
+  );
+
+  return {
+    layoutId: sourceLayoutId,
+    layoutName: slideLayoutName,
+    masterId: sourceMasterId,
+    masterName: slideMasterName,
+    templateName: slide.sourceTemplate.name,
+  };
+}
+
+async function template_getMasterByName(template, masterName) {
+  const masterNames = await getAllMasterNames(template.archive);
+  const masterId = masterNames.find((name) => name === masterName);
+
+  return {
+    masterName: masterName,
+    masterId: masterId,
+    master: template.masters[masterId],
+  };
+}
+
+async function master_getLayoutByName(master, layoutName) {
+  const layoutNames = await getAllLayoutNames(master);
+  const layoutId = layoutNames.find((name) => name === layoutName);
+
+  return {
+    layoutName: layoutName,
+    layoutId: layoutId,
+    layout: master.layouts[layoutId],
+  };
+}
+
+async function useNamedSlideLayout(
+  slide,
+  target = {
+    layoutId: null,
+    layoutName: null,
+    masterId: null,
+    masterName: null,
+    templateName: null,
+  },
+) {
+  const source = await slide_getHierarchy(slide);
+
+  const templateName = target.templateName || source.templateName;
+  const masterName = target.masterName || source.masterName;
+  const layoutName = target.layoutName || source.layoutName;
+
+  const template = slide.root.getTemplate(templateName);
+  const masterInfo = await template_getMasterByName(template, masterName);
+  const layoutInfo = await master_getLayoutByName(masterInfo.master, layoutName);
+
+  await slide.autoImportSourceSlideMaster(templateName, layoutInfo.layoutId);
+
+  const alreadyImported = slide.targetTemplate.getNamedMappedContent(
+    'slideLayout',
+    layoutName,
+  );
+
+  if (!alreadyImported) {
+    console.error(
+      `Could not find "${layoutName}"@${templateName}@` +
+        `sourceLayoutId:${layoutInfo.layoutId}`,
+    );
+  }
+
+  return alreadyImported?.targetId;
+}
 
 const MasterLayoutMapping = {
   SideBar: {
@@ -39,20 +184,6 @@ function getImagePathDetails(imagePath) {
   const imageDir = path.dirname(imagePath);
   const imageFile = path.basename(imagePath);
   return { imageDir, imageFile };
-}
-
-function isImageFile(fileName) {
-  const imageExtensions = [
-    '.jpg',
-    '.jpeg',
-    '.png',
-    '.gif',
-    '.bmp',
-    '.tiff',
-    '.svg',
-  ];
-  const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-  return imageExtensions.includes(fileExtension);
 }
 
 async function getSlideNumbers(pres, source) {
@@ -97,58 +228,12 @@ async function getSlideSize(slide) {
   return dimensions;
 }
 
-async function getMasterName(archive, number) {
-  const XML = await XmlHelper.getXmlFromArchive(
-    archive,
-    `ppt/theme/theme${number}.xml`,
-  );
-
-  const layout = XML.getElementsByTagName('a:theme')?.item(0);
-  if (layout) {
-    const name = layout.getAttribute('name');
-    return name;
-  }
-}
-
-async function getLayoutName(archive, number) {
-  const XML = await XmlHelper.getXmlFromArchive(
-    archive,
-    `ppt/slideLayouts/slideLayout${number}.xml`,
-  );
-
-  const layout = XML.getElementsByTagName('p:cSld')?.item(0);
-  if (layout) {
-    const name = layout.getAttribute('name');
-    return name;
-  }
-}
-
 async function adjustSlideElements(card, slide, templateDimensions) {
   // Get all elements in the slide
   // Don't forget to use 'await'
   const elements = await slide.getAllElements();
 
-  // Get source slide layout id
-  const sourceLayoutId = await XmlRelationshipHelper.getSlideLayoutNumber(
-    slide.sourceTemplate.archive,
-    slide.sourceNumber,
-  );
-
-  // Get source master id
-  const sourceMasterId = await XmlRelationshipHelper.getSlideMasterNumber(
-    slide.sourceTemplate.archive,
-    sourceLayoutId,
-  );
-
-  const slideMasterName = await getMasterName(
-    slide.sourceTemplate.archive,
-    sourceMasterId,
-  );
-
-  const slideLayoutName = await getLayoutName(
-    slide.sourceTemplate.archive,
-    sourceLayoutId,
-  );
+  const x = await useNamedSlideLayout(slide, { templateName: 'base', masterName: 'NoSideBar' });
 
   let layoutMapping;
 
@@ -158,7 +243,7 @@ async function adjustSlideElements(card, slide, templateDimensions) {
     layoutMapping = MasterLayoutMapping.NoSideBar;
   }
 
-  const slideLayout = layoutMapping[slideLayoutName] || layoutMapping.Blank;
+  const slideLayout = layoutMapping[x] || layoutMapping.Blank;
 
   const newDimensions = await getSlideSize(slide);
 
@@ -233,6 +318,7 @@ async function adjustSlideElements(card, slide, templateDimensions) {
 
 async function processFile(card, pres, templateDimensions) {
   const inputFile = card.file;
+  const { fileType } = card.fileType;
 
   try {
     await pres.load(inputFile);
