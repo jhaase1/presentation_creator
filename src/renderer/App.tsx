@@ -13,7 +13,7 @@ function Hello() {
   return (
     <div>
       <header className="header">
-        <h1>St. Mary of the Hills presentation creator</h1>
+        <h1>St. Mary of the Hills Presentation Creator</h1>
       </header>
       <div className="main-content">
         {/* Column 1 */}

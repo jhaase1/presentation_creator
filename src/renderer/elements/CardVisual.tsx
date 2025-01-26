@@ -80,13 +80,16 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       onDrop={handleDrop} // Handle file drops
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr auto',
+        gridTemplateColumns: 'auto 1fr auto',
         gap: '8px',
         padding: '8px',
         margin: '8px',
         backgroundColor: isOver ? '#c9c9c9' : '#e0e0e0',
       }}
     >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span style={{ cursor: 'grab' }}>☰</span> {/* Drag icon */}
+      </div>
       <div style={{ display: 'grid', gap: '8px' }}>
         <label
           htmlFor={`fileInput-${card.getID()}`}
@@ -97,7 +100,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
             borderRadius: '5px',
           }}
         >
-          {file || 'Select File'}
+          {file || 'Select an image or PowerPoint file'}
           <input
             key={`fileInput-${card.getID()}`}
             id={`fileInput-${card.getID()}`}
@@ -134,14 +137,8 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       <button
         type="button"
         onClick={() => stateManager.deleteCard(card.getID())}
-        style={{
-          color: 'white',
-          backgroundColor: '#d9534f',
-          border: 'none',
-          cursor: 'pointer',
-        }}
+        className="delete-button"
       >
-        x
       </button>
     </div>
   );
