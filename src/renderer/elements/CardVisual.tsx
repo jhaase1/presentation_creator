@@ -102,7 +102,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
             key={`fileInput-${card.getID()}`}
             id={`fileInput-${card.getID()}`}
             type="file"
-            accept=".pptx"
+            accept=".pptx,image/*"
             style={{ display: 'none' }}
             onChange={(e) => {
               const newFile = e.target.files?.[0];

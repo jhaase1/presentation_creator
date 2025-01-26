@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import path from 'path';
 
 import Automizer, {
@@ -11,6 +12,7 @@ import { XmlHelper } from 'pptx-automizer/dist/helper/xml-helper';
 import { XmlSlideHelper } from 'pptx-automizer/dist/helper/xml-slide-helper';
 
 import { load } from '../renderer/utilities/yamlFunctions';
+import { pptx } from '../renderer/types/FileTypes';
 
 const MasterLayoutMapping = {
   SideBar: {
@@ -39,20 +41,6 @@ function getImagePathDetails(imagePath) {
   const imageDir = path.dirname(imagePath);
   const imageFile = path.basename(imagePath);
   return { imageDir, imageFile };
-}
-
-function isImageFile(fileName) {
-  const imageExtensions = [
-    '.jpg',
-    '.jpeg',
-    '.png',
-    '.gif',
-    '.bmp',
-    '.tiff',
-    '.svg',
-  ];
-  const fileExtension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-  return imageExtensions.includes(fileExtension);
 }
 
 async function getSlideNumbers(pres, source) {
@@ -194,54 +182,49 @@ async function adjustSlideElements(card, slide, templateDimensions) {
       });
     });
   }
-  // // All shapes should be vertically centered to these dimensions:
-  // const targetDimensions = {
-  //   // imagine a virtual rectangle with a width of 23cm
-  //   w: CmToDxa(9.57 * 2.54),
-  //   // and a position of 3.56 in from the left.
-  //   x: CmToDxa(3.66 * 2.54),
-  // };
-
-  // // We enlarge all shapes by 122.5%
-  // const scale = 1.2225;
-
-  // elements.forEach((element) => {
-  //   slide.modifyElement(element.name, (xml) => {
-  //     // This will update shape position from the left,
-  //     // centered and according to the target vertical coordinates:
-  //     const targetOffset = (targetDimensions.w - element.position.cx) / 2;
-  //     const targetPos = {
-  //       x: targetDimensions.x + targetOffset,
-  //     };
-  //     ModifyShapeHelper.setPosition(targetPos)(xml);
-
-  //     // This will 'zoom' into the shape respecting its updated position:
-  //     const addWidth = element.position.cx * scale - element.position.cx;
-  //     const addHeight = element.position.cy * scale - element.position.cy;
-  //     const targetSize = {
-  //       w: element.position.cx + addWidth,
-  //       h: element.position.cy + addHeight,
-  //       x: targetPos.x - addWidth / 2,
-  //       y: element.position.y - addHeight / 2,
-  //     };
-  //     ModifyShapeHelper.setPosition(targetSize)(xml);
-  //   });
-  // });
 
   slide.useSlideLayout(slideLayout);
 }
 
+async function addSlideFromImage(pres, card) {
+  const { file, useSidebar } = card;
+  const { imageDir, imageFile } = getImagePathDetails(file);
+  let layoutMapping;
+
+  if (useSidebar) {
+    layoutMapping = MasterLayoutMapping.SideBar;
+  } else {
+    layoutMapping = MasterLayoutMapping.NoSideBar;
+  }
+
+  const slideLayout = layoutMapping[`Content Only`];
+
+  pres.loadMedia([imageFile], imageDir).addSlide(`base`, 2, (slide) => {
+    slide.useSlideLayout(slideLayout);
+    slide.modifyElement(`Content Placeholder 3`, [
+      ModifyImageHelper.setRelationTarget(imageFile),
+    ]);
+  });
+}
+
 async function processFile(card, pres, templateDimensions) {
-  const inputFile = card.file;
+  const { file, fileType } = card;
 
   try {
-    await pres.load(inputFile);
-    const slideNumbers = await getSlideNumbers(pres, inputFile);
+    if (fileType.startsWith('image/')) {
+      console.log('Image file:', file);
+      await addSlideFromImage(pres, card);
+    } else if (fileType === pptx) {
+      await pres.load(file);
+      const slideNumbers = await getSlideNumbers(pres, file);
 
-    for (const slideNumber of slideNumbers) {
-      pres.addSlide(inputFile, slideNumber, (slide) => {
-        adjustSlideElements(card, slide, templateDimensions);
-      });
+      for (const slideNumber of slideNumbers) {
+        pres.addSlide(file, slideNumber, (slide) => {
+          adjustSlideElements(card, slide, templateDimensions);
+        });
+      }
+    } else {
+      throw new Error(`Unsupported file type: ${fileType}`);
     }
 
     if (card.blankSlide) {
@@ -251,7 +234,7 @@ async function processFile(card, pres, templateDimensions) {
       });
     }
   } catch (error) {
-    console.error(`Error processing ${inputFile}:`, error);
+    console.error(`Error processing ${file}:`, error);
   }
 }
 
@@ -259,13 +242,13 @@ async function addSlidesToPresentation(yamlState) {
   const stateObj = load(yamlState);
   const { templateFile, sidebarFile, outputFile, cards } = stateObj;
 
-  // const templateSize = await getTemplateSize(templateFile);
-
   const { imageDir, imageFile } = getImagePathDetails(sidebarFile);
+  const tempDir = app.getPath('temp');
 
   const automizer = new Automizer({
     removeExistingSlides: true,
     cleanup: true,
+    templateDir: tempDir,
   });
 
   const pres = automizer
