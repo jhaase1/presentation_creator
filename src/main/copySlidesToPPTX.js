@@ -1,10 +1,13 @@
 import { app } from 'electron';
 import path from 'path';
 
+import sizeOf from 'image-size';
+
 import Automizer, {
   CmToDxa,
   ModifyShapeHelper,
   ModifyImageHelper,
+  ModifyBackgroundHelper,
 } from 'pptx-automizer/dist';
 
 import { XmlRelationshipHelper } from 'pptx-automizer/dist/helper/xml-relationship-helper';
@@ -188,6 +191,8 @@ async function adjustSlideElements(card, slide, templateDimensions) {
 
 async function addSlideFromImage(pres, card) {
   const { file, useSidebar } = card;
+  const dimensions = await sizeOf(file);
+
   const { imageDir, imageFile } = getImagePathDetails(file);
   let layoutMapping;
 
@@ -199,12 +204,70 @@ async function addSlideFromImage(pres, card) {
 
   const slideLayout = layoutMapping[`Content Only`];
 
-  pres.loadMedia([imageFile], imageDir).addSlide(`base`, 2, (slide) => {
+  pres.loadMedia([imageFile], imageDir).addSlide(`base`, 2, async (slide) => {
     slide.useSlideLayout(slideLayout);
-    slide.modifyElement(`Content Placeholder 3`, [
+
+    const elements = await slide.getAllElements();
+    const element = elements[0];
+
+    const scale = Math.min(
+      element.position.cx / dimensions.width,
+      element.position.cy / dimensions.height,
+    );
+
+    // slide.modifyElement(element.name, [
+
+    // ]);
+
+    slide.modifyElement(element.name, [
+      (xml) => {
+        const targetSize = {
+          w: Math.round(dimensions.width * scale),
+          h: Math.round(dimensions.height * scale),
+          x: Math.round(
+            element.position.x +
+              (element.position.cx - dimensions.width * scale) / 2,
+          ),
+          y: Math.round(
+            element.position.y +
+              (element.position.cy - dimensions.height * scale) / 2,
+          ),
+        };
+
+        ModifyShapeHelper.setPosition(targetSize)(xml);
+        // ModifyImageHelper.setRelationTarget(imageFile);
+      },
       ModifyImageHelper.setRelationTarget(imageFile),
     ]);
+
+    // elements.forEach((element) => {
+    //   slide.modifyElement(element.name, (xml) => {
+    //     // This will 'zoom' into the shape respecting its updated position:
+    //     const targetSize = {
+    //       w: element.position.cx * scale,
+    //       h: element.position.cy * scale,
+    //       x: element.position.x * scale,
+    //       y: element.position.y * scale,
+    //     };
+    //     ModifyShapeHelper.setPosition(targetSize)(xml);
+    //   });
+    // });
+
+    // Use pptxgenjs to add image from file:
+    // slide.generate((pptxGenJSSlide, objectName) => {
+    //   pptxGenJSSlide.addImage({
+    //     path: file,
+    //     objectName,
+    //   });
+    // });
   });
+
+  // pres.loadMedia([imageFile], imageDir).addSlide(`base`, 2, (slide) => {
+  //   slide.useSlideLayout(slideLayout);
+  //   slide.modifyElement(`Content Placeholder 3`, [
+  //     ModifyImageHelper.setRelationTarget(imageFile),
+  //   ]);
+  // });
 }
 
 async function processFile(card, pres, templateDimensions) {

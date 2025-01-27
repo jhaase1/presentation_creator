@@ -91,6 +91,7 @@
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
     "fs": "^0.0.1-security",
+    "image-size": "^1.2.0",
     "path": "^0.12.7",
     "path-browserify": "^1.0.1",
     "pptx-automizer": "^0.6.0",
