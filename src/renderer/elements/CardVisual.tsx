@@ -1,6 +1,8 @@
 /* eslint-disable react/function-component-definition */
 import React, { useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
+import { FaUpload } from 'react-icons/fa'; // Import an upload icon from react-icons
+
 import ItemTypes from '../types/ItemTypes';
 import StateManager from '../types/StateManager';
 import Card from '../types/Card';
@@ -98,20 +100,31 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
             padding: '8px',
             border: '2px solid #428bca',
             borderRadius: '5px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
           {file || 'Select an image or PowerPoint file'}
-          <input
-            key={`fileInput-${card.getID()}`}
-            id={`fileInput-${card.getID()}`}
-            type="file"
-            accept=".pptx,image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              const newFile = e.target.files?.[0];
-              if (newFile) card.setFile(newFile.path, newFile.type);
-            }}
-          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              key={`fileInput-${card.getID()}`}
+              id={`fileInput-${card.getID()}`}
+              type="file"
+              accept=".pptx,image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const newFile = e.target.files?.[0];
+                if (newFile) card.setFile(newFile.path, newFile.type);
+              }}
+            />
+            <label
+              htmlFor={`fileInput-${card.getID()}`}
+              style={{ cursor: 'pointer', marginLeft: '10px' }}
+            >
+              <FaUpload size={20} />
+            </label>
+          </div>
         </label>
 
         <label htmlFor={`useSidebar-${card.getID()}`}>
@@ -138,8 +151,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
         type="button"
         onClick={() => stateManager.deleteCard(card.getID())}
         className="delete-button"
-      >
-      </button>
+      />
     </div>
   );
 };

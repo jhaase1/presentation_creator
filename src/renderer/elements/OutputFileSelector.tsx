@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
 import { showSaveDialog, FileFilter } from '../utilities/createDialogs';
+import './FileSelector.css';
 
 class OutputFileSelector extends Component {
   constructor(props: any) {
@@ -63,28 +64,11 @@ class OutputFileSelector extends Component {
     const { outputFile } = this.state;
 
     return (
-      <div
-        style={{
-          border: '2px dashed #ccc',
-          padding: '5px',
-          margin: '5px 0',
-          textAlign: 'center',
-        }}
-      >
-        <p>Output PowerPoint</p>
-        <div
-          style={{
-            border: '2px solid #428bca',
-            borderRadius: '5px',
-            backgroundColor: '#f0f0f0',
-            padding: '10px',
-            margin: '10px',
-            textAlign: 'left',
-          }}
-          onClick={this.handleSaveAs}
-        >
+      <div className="file-selector-container">
+        <p className="file-selector-label">Output PowerPoint</p>
+        <div className="file-selector-dropzone" onClick={this.handleSaveAs}>
           {outputFile || (
-            <span style={{ color: '#999' }}>
+            <span className="file-selector-placeholder">
               Drag and drop a PowerPoint (.pptx) file here, or click to select
             </span>
           )}

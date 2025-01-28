@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
 import { showOpenDialog } from '../utilities/createDialogs';
+import './FileSelector.css';
 
 class BackupFolderSelector extends Component {
   constructor(props: any) {
@@ -60,35 +61,18 @@ class BackupFolderSelector extends Component {
   updateFile() {
     const fileManager = StateManager.getInstance();
     const backupFolder = fileManager.getBackupFolder();
-    this.setState({ backupFolder: backupFolder });
+    this.setState({ backupFolder });
   }
 
   render() {
     const { backupFolder } = this.state;
 
     return (
-      <div
-        style={{
-          border: '2px dashed #ccc',
-          padding: '5px',
-          margin: '5px 0',
-          textAlign: 'center',
-        }}
-      >
-        <p>Backup Folder</p>
-        <div
-          style={{
-            border: '2px solid #428bca',
-            borderRadius: '5px',
-            backgroundColor: '#f0f0f0',
-            padding: '10px',
-            margin: '10px',
-            textAlign: 'left',
-          }}
-          onClick={this.handleOpen}
-        >
+      <div className="file-selector-container">
+        <p className="file-selector-label">Backup Folder</p>
+        <div className="file-selector-dropzone" onClick={this.handleOpen}>
           {backupFolder || (
-            <span style={{ color: '#999' }}>
+            <span className="file-selector-placeholder">
               Drag and drop a backup folder, or click to select
             </span>
           )}

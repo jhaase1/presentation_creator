@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
+import './FileSelector.css';
 
 class TemplateFileSelector extends Component {
   constructor(props: any) {
@@ -68,34 +69,22 @@ class TemplateFileSelector extends Component {
       <div
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
-        style={{
-          border: '2px dashed #ccc',
-          padding: '5px',
-          margin: '5px 0',
-          textAlign: 'center',
-        }}
+        className="file-selector-container"
       >
-        <p>Template PowerPoint</p>
+        <p className="file-selector-label">Template PowerPoint</p>
         <input
           type="file"
           accept=".pptx"
           id="template-input"
-          style={{ display: 'none' }}
+          className="file-selector-input"
           onChange={this.handleFileChange}
         />
         <div
-          style={{
-            border: '2px solid #428bca',
-            borderRadius: '5px',
-            backgroundColor: '#f0f0f0',
-            padding: '10px',
-            margin: '10px',
-            textAlign: 'left',
-          }}
+          className="file-selector-dropzone"
           onClick={() => document.getElementById('template-input')?.click()}
         >
           {templateFile || (
-            <span style={{ color: '#999' }}>
+            <span className="file-selector-placeholder">
               Drag and drop a PowerPoint (.pptx) file here, or click to select
             </span>
           )}

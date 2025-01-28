@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
+import './FileSelector.css';
 
 class SidebarFileSelector extends Component {
   constructor(props: any) {
@@ -60,34 +61,22 @@ class SidebarFileSelector extends Component {
       <div
         onDragOver={this.handleDragOver}
         onDrop={this.handleDrop}
-        style={{
-          border: '2px dashed #ccc',
-          padding: '5px',
-          margin: '5px 0',
-          textAlign: 'center',
-        }}
+        className="file-selector-container"
       >
-        <p>Sidebar image</p>
+        <p className="file-selector-label">Sidebar image</p>
         <input
           type="file"
           accept="image/*"
           id="sidebar-input"
-          style={{ display: 'none' }}
+          className="file-selector-input"
           onChange={this.handleFileChange}
         />
         <div
-          style={{
-            border: '2px solid #428bca',
-            borderRadius: '5px',
-            backgroundColor: '#f0f0f0',
-            padding: '10px',
-            margin: '10px',
-            textAlign: 'left',
-          }}
+          className="file-selector-dropzone"
           onClick={() => document.getElementById('sidebar-input')?.click()}
         >
           {sidebarFile || (
-            <span style={{ color: '#999' }}>
+            <span className="file-selector-placeholder">
               Drag and drop an image file here, or click to select
             </span>
           )}

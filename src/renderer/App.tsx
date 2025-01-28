@@ -29,11 +29,11 @@ function Hello() {
           {/* File Selector Component */}
           <SidebarFileSelector />
 
-          {/* Template Selector Component */}
-          <TemplateFileSelector />
-
           {/* Output Selector Component */}
           <OutputFileSelector />
+
+          {/* Template Selector Component */}
+          <TemplateFileSelector />
 
           {/* Backup Folder Selector Component */}
           <BackupFolderSelector />
