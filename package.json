@@ -171,7 +171,7 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "StMarysPresentationCreator",
+    "productName": "St. Mary of the Hills Presentation Creator",
     "appId": "org.erb.ElectronReact",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",

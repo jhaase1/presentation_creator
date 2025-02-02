@@ -24,7 +24,7 @@ function Hello() {
         {/* Combined Column */}
         <div className="column column-narrow">
           {/* File Selector Component */}
-          <YAMLFileSelector />
+          {/* <YAMLFileSelector /> */}
 
           {/* File Selector Component */}
           <SidebarFileSelector />

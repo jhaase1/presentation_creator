@@ -25,6 +25,7 @@ class StateManager {
 
   private constructor() {
     this.initializeFromSettings();
+    this.addCard();
   }
 
   static getInstance(): StateManager {

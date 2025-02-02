@@ -6,6 +6,7 @@ import { FaUpload } from 'react-icons/fa'; // Import an upload icon from react-i
 import ItemTypes from '../types/ItemTypes';
 import StateManager from '../types/StateManager';
 import Card from '../types/Card';
+import { readYAMLFile } from '../utilities/yamlFunctions';
 
 const stateManager = StateManager.getInstance();
 interface CardProps {
@@ -62,7 +63,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
 
   drag(drop(cardRef)); // Combine refs for drag and drop
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files?.[0];
     if (
@@ -72,6 +73,16 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
         droppedFile.type.startsWith('image/'))
     ) {
       card.setFile(droppedFile.path, droppedFile.type);
+    } else if (
+      droppedFile &&
+      (droppedFile.path.endsWith('.yaml') || droppedFile.path.endsWith('.yml'))
+    ) {
+      // eslint-disable-next-line no-alert
+      const id = card.getID();
+      const cardIndex = stateManager.findCard(id);
+
+      const data = await readYAMLFile(droppedFile.path);
+      stateManager.safeUpdateState(data, cardIndex, 1);
     }
   };
 
@@ -105,13 +116,13 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
             alignItems: 'center',
           }}
         >
-          {file || 'Select an image or PowerPoint file'}
+          {file || 'Select a file to add to the presentation'}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               key={`fileInput-${card.getID()}`}
               id={`fileInput-${card.getID()}`}
               type="file"
-              accept=".pptx,image/*"
+              accept=".pptx,image/*,yaml,yml"
               style={{ display: 'none' }}
               onChange={(e) => {
                 const newFile = e.target.files?.[0];
