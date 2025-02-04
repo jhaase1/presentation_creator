@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
 import { showOpenDialog } from '../utilities/createDialogs';
 import './FileSelector.css';
+import { FaUpload } from 'react-icons/fa'; // Import the upload icon
 
 class BackupFolderSelector extends Component {
   constructor(props: any) {
@@ -72,10 +73,10 @@ class BackupFolderSelector extends Component {
         <p className="file-selector-label">Backup Folder</p>
         <div className="file-selector-dropzone" onClick={this.handleOpen}>
           {backupFolder || (
-            <span className="file-selector-placeholder">
-              Drag and drop a backup folder, or click to select
-            </span>
+            <span>Drag and drop a backup folder, or click to select</span>
           )}
+          <FaUpload size={20} style={{ marginLeft: '10px' }} />{' '}
+          {/* Add the upload icon */}
         </div>
       </div>
     );

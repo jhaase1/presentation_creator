@@ -1,13 +1,10 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
-import YAMLFileSelector from './elements/YAMLFileSelector';
-import SidebarFileSelector from './elements/SidebarFileSelector';
-import TemplateFileSelector from './elements/TemplateFileSelector';
-import OutputFileSelector from './elements/OutputFileSelector';
 import CopySlidesButton from './elements/CopySlides';
 import CardListVisual from './elements/CardListVisual';
-import BackupFolderSelector from './elements/BackupFolderSelector';
+import FileSelectors from './elements/FileSelectors';
+
 
 function Hello() {
   return (
@@ -24,19 +21,7 @@ function Hello() {
         {/* Combined Column */}
         <div className="column column-narrow">
           {/* File Selector Component */}
-          {/* <YAMLFileSelector /> */}
-
-          {/* File Selector Component */}
-          <SidebarFileSelector />
-
-          {/* Output Selector Component */}
-          <OutputFileSelector />
-
-          {/* Template Selector Component */}
-          <TemplateFileSelector />
-
-          {/* Backup Folder Selector Component */}
-          <BackupFolderSelector />
+          <FileSelectors />
 
           {/* Copy Slides Button */}
           <CopySlidesButton />

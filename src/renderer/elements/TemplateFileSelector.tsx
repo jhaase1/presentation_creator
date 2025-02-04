@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { FaUpload } from 'react-icons/fa';
 import StateManager from '../types/StateManager';
 import './FileSelector.css';
+import '../App.css';
 
 class TemplateFileSelector extends Component {
   constructor(props: any) {
@@ -59,7 +61,7 @@ class TemplateFileSelector extends Component {
 
     // Update the state with the file string
     this.setState({ templateFile: fileString });
-    document.getElementById("template-input").value = "";
+    document.getElementById('template-input').value = '';
   }
 
   render() {
@@ -78,16 +80,19 @@ class TemplateFileSelector extends Component {
           id="template-input"
           className="file-selector-input"
           onChange={this.handleFileChange}
+          style={{ display: 'none' }} // Hide the input
         />
         <div
           className="file-selector-dropzone"
           onClick={() => document.getElementById('template-input')?.click()}
         >
           {templateFile || (
-            <span className="file-selector-placeholder">
+            <span>
               Drag and drop a PowerPoint (.pptx) file here, or click to select
             </span>
           )}
+          <FaUpload size={20} style={{ marginLeft: '10px' }} />{' '}
+          {/* Add the upload icon */}
         </div>
       </div>
     );

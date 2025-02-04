@@ -8,6 +8,8 @@ import StateManager from '../types/StateManager';
 import Card from '../types/Card';
 import { readYAMLFile } from '../utilities/yamlFunctions';
 
+import '../App.css';
+
 const stateManager = StateManager.getInstance();
 interface CardProps {
   card: Card;
@@ -91,14 +93,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       ref={cardRef}
       onDragOver={(e) => e.preventDefault()} // Allow dragging over
       onDrop={handleDrop} // Handle file drops
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'auto 1fr auto',
-        gap: '8px',
-        padding: '8px',
-        margin: '8px',
-        backgroundColor: isOver ? '#c9c9c9' : '#e0e0e0',
-      }}
+      className={`card-visual ${isOver ? 'is-over' : ''}`}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <span style={{ cursor: 'grab' }}>☰</span> {/* Drag icon */}
@@ -106,15 +101,7 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
       <div style={{ display: 'grid', gap: '8px' }}>
         <label
           htmlFor={`fileInput-${card.getID()}`}
-          style={{
-            cursor: 'pointer',
-            padding: '8px',
-            border: '2px solid #428bca',
-            borderRadius: '5px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
+          className="file-selector-dropzone"
         >
           {file || 'Select a file to add to the presentation'}
           <div style={{ display: 'flex', alignItems: 'center' }}>

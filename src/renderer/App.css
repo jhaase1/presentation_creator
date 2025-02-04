@@ -7,10 +7,10 @@ body {
   position: relative;
   color: black;
   height: 100%;
-  background: white;
+  background: rgb(254, 254, 254);
   background-attachment: fixed;
   font-family: sans-serif;
-  overflow-y: auto;
+  overflow-y: hidden;
   margin: 0;
   padding: 0;
   display: flex;
@@ -36,6 +36,20 @@ body {
 
 .header h1 {
   padding: 0 40px;
+}
+
+.card-visual {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  padding: 8px;
+  margin: 8px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+}
+
+.card-visual.is-over {
+  background-color: #c9c9c9;
 }
 
 .delete-button {
@@ -66,7 +80,18 @@ body {
   justify-content: space-between; /* Ensure even spacing between columns */
   align-items: flex-start; /* Align columns to the top */
   padding: 2%;
-  width: 90%;
+  width: 96%;
+}
+
+.file-selector-dropzone {
+  cursor: pointer;
+  padding: 8px;
+  border: 2px solid;
+  border-color: #428bca;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .column {
@@ -80,7 +105,7 @@ body {
 }
 
 .column-narrow {
-  flex: 1;
+  flex: 1.5;
 }
 
 .spacing {

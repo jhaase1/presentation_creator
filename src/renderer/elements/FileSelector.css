@@ -1,26 +1,15 @@
 .file-selector-container {
-  border: 2px dashed #ccc;
-  padding: 5px;
-  margin: 7px 0;
-  text-align: center;
+  display: grid;
+  /* grid-template-columns: auto 1fr auto; */
+  gap: 8px;
+  padding: 8px;
+  margin: 8px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
 }
 
 .file-selector-input {
   display: none;
-}
-
-.file-selector-dropzone {
-  border: 2px solid #428bca;
-  border-radius: 5px;
-  background-color: #f0f0f0;
-  padding: 10px;
-  margin: 0px;
-  margin-bottom: 5px;
-  text-align: left;
-}
-
-.file-selector-placeholder {
-  color: #999;
 }
 
 .file-selector-label {

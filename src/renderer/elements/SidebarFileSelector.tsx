@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
 import './FileSelector.css';
+import { FaUpload } from 'react-icons/fa'; // Import the upload icon
 
 class SidebarFileSelector extends Component {
   constructor(props: any) {
@@ -49,9 +50,9 @@ class SidebarFileSelector extends Component {
   updateFile() {
     const fileManager = StateManager.getInstance();
     const sidebarFile = fileManager.getSidebarFile();
-    this.setState({ sidebarFile: sidebarFile });
+    this.setState({ sidebarFile });
 
-    document.getElementById("sidebar-input").value = "";
+    document.getElementById('sidebar-input').value = '';
   }
 
   render() {
@@ -70,16 +71,17 @@ class SidebarFileSelector extends Component {
           id="sidebar-input"
           className="file-selector-input"
           onChange={this.handleFileChange}
+          style={{ display: 'none' }} // Hide the input
         />
         <div
           className="file-selector-dropzone"
           onClick={() => document.getElementById('sidebar-input')?.click()}
         >
           {sidebarFile || (
-            <span className="file-selector-placeholder">
-              Drag and drop an image file here, or click to select
-            </span>
+            <span>Drag and drop an image file here, or click to select</span>
           )}
+          <FaUpload size={20} style={{ marginLeft: '10px' }} />{' '}
+          {/* Add the upload icon */}
         </div>
       </div>
     );

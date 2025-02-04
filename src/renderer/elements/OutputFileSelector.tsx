@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import StateManager from '../types/StateManager';
 import { showSaveDialog, FileFilter } from '../utilities/createDialogs';
 import './FileSelector.css';
+import { FaUpload } from 'react-icons/fa'; // Import the upload icon
 
 class OutputFileSelector extends Component {
   constructor(props: any) {
@@ -68,10 +69,12 @@ class OutputFileSelector extends Component {
         <p className="file-selector-label">Output PowerPoint</p>
         <div className="file-selector-dropzone" onClick={this.handleSaveAs}>
           {outputFile || (
-            <span className="file-selector-placeholder">
+            <span>
               Drag and drop a PowerPoint (.pptx) file here, or click to select
             </span>
           )}
+          <FaUpload size={20} style={{ marginLeft: '10px' }} />{' '}
+          {/* Add the upload icon */}
         </div>
       </div>
     );
