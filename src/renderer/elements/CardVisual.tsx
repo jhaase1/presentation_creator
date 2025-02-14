@@ -65,27 +65,31 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
 
   drag(drop(cardRef)); // Combine refs for drag and drop
 
-  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const droppedFile = event.dataTransfer.files?.[0];
+  async function handleFile(userFile: File | undefined) {
     if (
-      droppedFile &&
-      (droppedFile.type ===
+      userFile &&
+      (userFile.type ===
         'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
-        droppedFile.type.startsWith('image/'))
+        userFile.type.startsWith('image/'))
     ) {
-      card.setFile(droppedFile.path, droppedFile.type);
+      card.setFile(userFile.path, userFile.type);
     } else if (
-      droppedFile &&
-      (droppedFile.path.endsWith('.yaml') || droppedFile.path.endsWith('.yml'))
+      userFile &&
+      (userFile.path.endsWith('.yaml') || userFile.path.endsWith('.yml'))
     ) {
       // eslint-disable-next-line no-alert
       const id = card.getID();
       const cardIndex = stateManager.findCard(id);
 
-      const data = await readYAMLFile(droppedFile.path);
+      const data = await readYAMLFile(userFile.path);
       stateManager.safeUpdateState(data, cardIndex, 1);
     }
+  }
+
+  const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const droppedFile = event.dataTransfer.files?.[0];
+    handleFile(droppedFile);
   };
 
   return (
@@ -109,11 +113,11 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
               key={`fileInput-${card.getID()}`}
               id={`fileInput-${card.getID()}`}
               type="file"
-              accept=".pptx,image/*,yaml,yml"
+              accept=".pptx,image/*,.yaml,.yml"
               style={{ display: 'none' }}
               onChange={(e) => {
                 const newFile = e.target.files?.[0];
-                if (newFile) card.setFile(newFile.path, newFile.type);
+                handleFile(newFile);
               }}
             />
             <label
