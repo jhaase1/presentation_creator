@@ -106,6 +106,11 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
         <label
           htmlFor={`fileInput-${card.getID()}`}
           className="file-selector-dropzone"
+          style={{
+            backgroundColor: card.getPlaceholder()
+              ? 'rgba(255, 0, 0, 0.66)'
+              : 'transparent',
+          }}
         >
           {file || 'Select a file to add to the presentation'}
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -114,7 +119,9 @@ const CardVisual: React.FC<CardProps> = ({ card, index }) => {
               id={`fileInput-${card.getID()}`}
               type="file"
               accept=".pptx,image/*,.yaml,.yml"
-              style={{ display: 'none' }}
+              style={{
+                display: 'none',
+              }}
               onChange={(e) => {
                 const newFile = e.target.files?.[0];
                 handleFile(newFile);

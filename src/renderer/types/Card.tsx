@@ -13,6 +13,8 @@ class Card {
 
   blankSlide: boolean;
 
+  placeholder: boolean;
+
   private listeners: (() => void)[] = [];
 
   constructor(
@@ -20,6 +22,7 @@ class Card {
     useSidebar: boolean = true,
     blankSlide: boolean = true,
     fileType: string | null = null,
+    placeholder: boolean = false,
   ) {
     this.id = uuidv4();
     this.file = file;
@@ -31,6 +34,7 @@ class Card {
     }
     this.useSidebar = useSidebar;
     this.blankSlide = blankSlide;
+    this.placeholder = placeholder;
   }
 
   addListener(listener: () => void): void {
@@ -55,6 +59,11 @@ class Card {
     this.notifyListeners();
   }
 
+  setPlaceholder(placeholder: boolean): void {
+    this.placeholder = placeholder;
+    this.notifyListeners();
+  }
+
   setFile(file: string | null, fileType: string | null): void {
     this.file = file;
 
@@ -63,6 +72,8 @@ class Card {
     } else {
       this.fileType = pptx;
     }
+
+    this.setPlaceholder(false);
 
     this.notifyListeners();
   }
@@ -73,6 +84,10 @@ class Card {
 
   getUseSidebar(): boolean {
     return this.useSidebar;
+  }
+
+  getPlaceholder(): boolean {
+    return this.placeholder;
   }
 
   getFile(): string | null {
@@ -97,12 +112,14 @@ export const cardYAMLType = new jsyaml.Type('!Card', {
       fileType: data.fileType || pptx,
       useSidebar: data.useSidebar,
       blankSlide: data.blankSlide,
+      placeholder: data.placeholder,
     }),
   represent: (card: any) => ({
     file: card.file,
     fileType: card.fileType,
     useSidebar: card.useSidebar,
     blankSlide: card.blankSlide,
+    placeholder: card.placeholder,
   }),
 });
 
